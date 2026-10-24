@@ -1,0 +1,25 @@
+{
+  "name": "pawnee-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "diagnostico": "tsx scripts/diagnostico.ts",
+    "seed": "tsx scripts/seed.ts",
+    "validar-modelos": "tsx scripts/validar-modelos.ts"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "mongoose": "8.9.5",
+    "dotenv": "16.4.7"
+  },
+  "devDependencies": {
+    "typescript": "5.7.3",
+    "tsx": "4.19.2",
+    "@types/express": "4.17.21",
+    "@types/node": "22.10.5"
+  }
+}
