@@ -110,7 +110,7 @@ export async function obtenerResumen(id: string): Promise<ResumenVideojuego> {
   const minutosTotales = partidas.reduce((suma, p) => suma + p.duracionMinutos, 0);
   return {
     totalPartidas: partidas.length,
-    horasTotales: minutosTotales / 60,
+    horasTotales: Number((minutosTotales / 60).toFixed(1)),
     ultimaPartida: ultima.fecha,
     porcentajeAvanceActual: ultima.porcentajeAvance,
   };
