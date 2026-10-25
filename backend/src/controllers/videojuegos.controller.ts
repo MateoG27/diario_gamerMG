@@ -53,6 +53,29 @@ export async function obtenerResumen(req: Request, res: Response, next: NextFunc
   }
 }
 
+/** POST /:id/logros — cuerpo: { nombre: string } */
+export async function agregarLogro(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const body: unknown = req.body;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) throw new ApiError(400, 'Se requiere un objeto JSON');
+    const { nombre, ...extra } = body as Record<string, unknown>;
+    if (Object.keys(extra).length) throw new ApiError(400, 'Campos no permitidos en el cuerpo');
+    if (typeof nombre !== 'string' || !nombre.trim()) throw new ApiError(400, 'Falta el campo nombre');
+    res.status(201).json(await videojuegos.agregarLogro(req.params.id, nombre));
+  } catch (e) {
+    next(e);
+  }
+}
+
+/** DELETE /:id/logros/:nombreLogro */
+export async function eliminarLogro(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    res.json(await videojuegos.eliminarLogro(req.params.id, req.params.nombreLogro));
+  } catch (e) {
+    next(e);
+  }
+}
+
 /** PATCH /:id/logros — cuerpo: { nombre: string, obtenido: boolean } */
 export async function marcarLogro(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

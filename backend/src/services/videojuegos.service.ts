@@ -116,6 +116,33 @@ export async function obtenerResumen(id: string): Promise<ResumenVideojuego> {
   };
 }
 
+export async function agregarLogro(id: string, nombre: string): Promise<VideojuegoDocumento> {
+  idValido(id);
+  const nombreLimpio = nombre.trim();
+  if (!nombreLimpio) throw new ApiError(400, 'Falta el campo nombre');
+  // Una sola operación atómica: si el juego no existe, devuelve null.
+  const videojuego = await Videojuego.findByIdAndUpdate(
+    id,
+    { $push: { logros: { nombre: nombreLimpio, obtenido: false } } },
+    { new: true, runValidators: true },
+  );
+  if (!videojuego) throw new ApiError(404, 'Videojuego no encontrado');
+  return videojuego;
+}
+
+export async function eliminarLogro(id: string, nombreLogro: string): Promise<VideojuegoDocumento> {
+  idValido(id);
+  const videojuego = await Videojuego.findOneAndUpdate(
+    { _id: id, 'logros.nombre': nombreLogro },
+    { $pull: { logros: { nombre: nombreLogro } } },
+    { new: true },
+  );
+  if (videojuego) return videojuego;
+  // No hubo coincidencia: distinguir entre juego inexistente y logro inexistente.
+  if (!(await Videojuego.exists({ _id: id }))) throw new ApiError(404, 'Videojuego no encontrado');
+  throw new ApiError(404, 'Logro no encontrado');
+}
+
 export async function marcarLogro(id: string, nombreLogro: string, obtenido: boolean): Promise<VideojuegoDocumento> {
   idValido(id);
   const videojuego = await Videojuego.findOneAndUpdate(

@@ -60,6 +60,12 @@ export const videojuegosApi = {
 
   obtenerResumen: (id: string) => solicitar<Resumen>(`${RUTA}/${id}/resumen`),
 
+  agregarLogro: (id: string, nombre: string) =>
+    solicitar<Videojuego>(`${RUTA}/${id}/logros`, json('POST', { nombre })),
+
+  eliminarLogro: (id: string, nombreLogro: string) =>
+    solicitar<Videojuego>(`${RUTA}/${id}/logros/${encodeURIComponent(nombreLogro)}`, { method: 'DELETE' }),
+
   marcarLogro: (id: string, nombre: string, obtenido: boolean) =>
     solicitar<Videojuego>(`${RUTA}/${id}/logros`, json('PATCH', { nombre, obtenido })),
 
