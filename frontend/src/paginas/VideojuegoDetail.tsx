@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -15,6 +15,7 @@ import {
   Smartphone,
   Sparkles,
   ToggleLeft,
+  Trash2,
   TrendingUp,
   Trophy,
   AlertTriangle,
@@ -29,6 +30,7 @@ import {
   animacionesReducidas,
   botonPrimario,
   botonSecundario,
+  campo,
   claseEstado,
   enlaceVolver,
   insignia,
@@ -75,6 +77,8 @@ export default function VideojuegoDetail() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [errorLogro, setErrorLogro] = useState<string | null>(null);
+  const [nuevoLogro, setNuevoLogro] = useState('');
+  const [agregando, setAgregando] = useState(false);
   const contenedor = useRef<HTMLElement>(null);
 
   const cargar = useCallback(async (): Promise<Datos> => {
@@ -126,6 +130,33 @@ export default function VideojuegoDetail() {
       setDatos(await cargar()); // refresca videojuego, resumen y partidas
     } catch (e) {
       setErrorLogro(mensajeError(e));
+    }
+  }
+
+  async function borrarLogro(nombre: string) {
+    setErrorLogro(null);
+    try {
+      await videojuegosApi.eliminarLogro(id, nombre);
+      setDatos(await cargar()); // refresca para quitarlo de la lista
+    } catch (e) {
+      setErrorLogro(mensajeError(e));
+    }
+  }
+
+  async function agregarLogro(e: FormEvent) {
+    e.preventDefault();
+    const nombre = nuevoLogro.trim();
+    if (!nombre) return;
+    setErrorLogro(null);
+    setAgregando(true);
+    try {
+      await videojuegosApi.agregarLogro(id, nombre);
+      setNuevoLogro('');
+      setDatos(await cargar()); // el nuevo logro aparece al instante en la lista
+    } catch (err) {
+      setErrorLogro(mensajeError(err));
+    } finally {
+      setAgregando(false);
     }
   }
 
@@ -216,6 +247,22 @@ export default function VideojuegoDetail() {
               </span>
             )}
           </h2>
+          <form onSubmit={e => void agregarLogro(e)} className="mb-4 flex gap-2">
+            <input
+              type="text"
+              value={nuevoLogro}
+              onChange={e => setNuevoLogro(e.target.value)}
+              placeholder="Nombre del logro"
+              aria-label="Nombre del logro"
+              maxLength={120}
+              required
+              className={campo}
+            />
+            <button type="submit" disabled={agregando || !nuevoLogro.trim()} className={`${botonPrimario} shrink-0`}>
+              <Plus className="h-4 w-4" />
+              {agregando ? 'Añadiendo...' : 'Añadir'}
+            </button>
+          </form>
           {errorLogro && (
             <p
               role="alert"
@@ -232,14 +279,15 @@ export default function VideojuegoDetail() {
           ) : (
             <ul className="space-y-2">
               {videojuego.logros.map(l => (
-                <li key={l._id}>
-                  <label
-                    className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
-                      l.obtenido
-                        ? 'border-emerald-400/50 bg-emerald-400/10 text-emerald-200 hover:shadow-emerald-500/20'
-                        : 'border-zinc-800 bg-zinc-900/70 text-zinc-300 hover:border-emerald-400/40 hover:shadow-emerald-500/10'
-                    }`}
-                  >
+                <li
+                  key={l._id}
+                  className={`flex items-center justify-between gap-2 rounded-lg border pr-2 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
+                    l.obtenido
+                      ? 'border-emerald-400/50 bg-emerald-400/10 text-emerald-200 hover:shadow-emerald-500/20'
+                      : 'border-zinc-800 bg-zinc-900/70 text-zinc-300 hover:border-emerald-400/40 hover:shadow-emerald-500/10'
+                  }`}
+                >
+                  <label className="flex flex-1 cursor-pointer items-center gap-3 px-4 py-3">
                     <input
                       type="checkbox"
                       checked={l.obtenido}
@@ -249,6 +297,15 @@ export default function VideojuegoDetail() {
                     <span className="flex-1">{l.nombre}</span>
                     {l.obtenido && <CheckCircle2 className="h-5 w-5 text-emerald-400" />}
                   </label>
+                  <button
+                    type="button"
+                    onClick={() => void borrarLogro(l.nombre)}
+                    aria-label={`Eliminar logro ${l.nombre}`}
+                    title="Eliminar logro"
+                    className="cursor-pointer rounded p-2 text-red-500 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </li>
               ))}
             </ul>

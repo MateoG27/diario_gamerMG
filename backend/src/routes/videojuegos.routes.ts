@@ -12,6 +12,8 @@ router.patch('/:id', controller.actualizar);
 router.delete('/:id', controller.eliminar);
 
 router.get('/:id/partidas', controller.listarPartidas);
+router.post('/:id/logros', controller.agregarLogro);
 router.patch('/:id/logros', controller.marcarLogro);
+router.delete('/:id/logros/:nombreLogro', controller.eliminarLogro);
 
 export default router;
