@@ -1,5 +1,8 @@
 export function formatearFecha(iso: string): string {
-  return new Date(iso).toLocaleString('es-EC', { dateStyle: 'medium', timeStyle: 'short' });
+  return new Date(iso).toLocaleString('es-EC', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
 }
 
 /** Valor inicial para `<input type="datetime-local">` (hora local actual). */

@@ -43,11 +43,13 @@ export default function PartidaForm() {
     let activo = true;
     videojuegosApi
       .listar()
-      .then(datos => {
+      .then((datos) => {
         if (!activo) return;
         setVideojuegos(datos);
         // Si el ID de la URL no existe o no vino, se selecciona el primero.
-        setVideojuego(actual => (datos.some(v => v._id === actual) ? actual : (datos[0]?._id ?? '')));
+        setVideojuego((actual) =>
+          datos.some((v) => v._id === actual) ? actual : (datos[0]?._id ?? '')
+        );
       })
       .catch((e: unknown) => {
         if (activo) setError(mensajeError(e));
@@ -63,9 +65,15 @@ export default function PartidaForm() {
   useGSAP(
     () => {
       if (cargando || !contenedor.current || animacionesReducidas()) return;
-      gsap.from(contenedor.current, { opacity: 0, y: 24, duration: 0.5, ease: 'power2.out', clearProps: 'opacity,transform' });
+      gsap.from(contenedor.current, {
+        opacity: 0,
+        y: 24,
+        duration: 0.5,
+        ease: 'power2.out',
+        clearProps: 'opacity,transform',
+      });
     },
-    { dependencies: [cargando] },
+    { dependencies: [cargando] }
   );
 
   async function enviar(e: FormEvent) {
@@ -95,7 +103,10 @@ export default function PartidaForm() {
         {!cargando && !error && (
           <p className="py-10 text-center text-zinc-300">
             Primero debes{' '}
-            <Link to="/videojuegos/nuevo" className="text-cyan-300 underline hover:text-cyan-200">
+            <Link
+              to="/videojuegos/nuevo"
+              className="text-cyan-300 underline hover:text-cyan-200"
+            >
               registrar un videojuego
             </Link>{' '}
             para poder crear partidas.
@@ -117,7 +128,7 @@ export default function PartidaForm() {
         <h1 className={`${titulo} mb-6`}>
           Nueva <span className="text-cyan-400">partida</span>
         </h1>
-        <form onSubmit={e => void enviar(e)} className="space-y-5">
+        <form onSubmit={(e) => void enviar(e)} className="space-y-5">
           <div>
             <label htmlFor="videojuego" className={etiqueta}>
               Videojuego
@@ -125,11 +136,11 @@ export default function PartidaForm() {
             <select
               id="videojuego"
               value={videojuego}
-              onChange={e => setVideojuego(e.target.value)}
+              onChange={(e) => setVideojuego(e.target.value)}
               required
               className={campo}
             >
-              {videojuegos.map(v => (
+              {videojuegos.map((v) => (
                 <option key={v._id} value={v._id}>
                   {v.nombre} ({v.plataforma})
                 </option>
@@ -144,7 +155,7 @@ export default function PartidaForm() {
               id="fecha"
               type="datetime-local"
               value={fecha}
-              onChange={e => setFecha(e.target.value)}
+              onChange={(e) => setFecha(e.target.value)}
               required
               className={campo}
             />
@@ -160,7 +171,7 @@ export default function PartidaForm() {
                 min={0}
                 step={1}
                 value={duracionMinutos}
-                onChange={e => setDuracionMinutos(e.target.value)}
+                onChange={(e) => setDuracionMinutos(e.target.value)}
                 required
                 placeholder="60"
                 className={campo}
@@ -177,7 +188,7 @@ export default function PartidaForm() {
                 max={100}
                 step={1}
                 value={porcentajeAvance}
-                onChange={e => setPorcentajeAvance(e.target.value)}
+                onChange={(e) => setPorcentajeAvance(e.target.value)}
                 required
                 placeholder="25"
                 className={campo}
@@ -191,7 +202,7 @@ export default function PartidaForm() {
             <textarea
               id="notas"
               value={notas}
-              onChange={e => setNotas(e.target.value)}
+              onChange={(e) => setNotas(e.target.value)}
               rows={3}
               maxLength={500}
               placeholder="¿Qué lograste en esta sesión?"

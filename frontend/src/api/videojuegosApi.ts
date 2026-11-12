@@ -1,9 +1,27 @@
 import { solicitar } from './cliente';
 import type { Partida } from './partidasApi';
 
-export const PLATAFORMAS = ['PC', 'PlayStation', 'Xbox', 'Switch', 'Movil'] as const;
-export const GENEROS = ['accion', 'rol', 'estrategia', 'puzzle', 'deportes', 'otro'] as const;
-export const ESTADOS = ['jugando', 'pausado', 'completado', 'abandonado'] as const;
+export const PLATAFORMAS = [
+  'PC',
+  'PlayStation',
+  'Xbox',
+  'Switch',
+  'Movil',
+] as const;
+export const GENEROS = [
+  'accion',
+  'rol',
+  'estrategia',
+  'puzzle',
+  'deportes',
+  'otro',
+] as const;
+export const ESTADOS = [
+  'jugando',
+  'pausado',
+  'completado',
+  'abandonado',
+] as const;
 
 export type Plataforma = (typeof PLATAFORMAS)[number];
 export type Genero = (typeof GENEROS)[number];
@@ -42,21 +60,29 @@ export interface VideojuegoDatos {
 }
 
 const RUTA = '/api/videojuegos';
-const json = (metodo: string, cuerpo: unknown): RequestInit => ({ method: metodo, body: JSON.stringify(cuerpo) });
+const json = (metodo: string, cuerpo: unknown): RequestInit => ({
+  method: metodo,
+  body: JSON.stringify(cuerpo),
+});
 
 export const videojuegosApi = {
   listar: (filtro?: string) =>
-    solicitar<Videojuego[]>(filtro ? `${RUTA}?filtro=${encodeURIComponent(filtro)}` : RUTA),
+    solicitar<Videojuego[]>(
+      filtro ? `${RUTA}?filtro=${encodeURIComponent(filtro)}` : RUTA
+    ),
 
   obtener: (id: string) => solicitar<Videojuego>(`${RUTA}/${id}`),
 
-  crear: (datos: VideojuegoDatos) => solicitar<Videojuego>(RUTA, json('POST', datos)),
+  crear: (datos: VideojuegoDatos) =>
+    solicitar<Videojuego>(RUTA, json('POST', datos)),
 
   actualizar: (id: string, datos: Partial<VideojuegoDatos>) =>
     solicitar<Videojuego>(`${RUTA}/${id}`, json('PUT', datos)),
 
   eliminar: (id: string) =>
-    solicitar<{ mensaje: string; videojuego: Videojuego }>(`${RUTA}/${id}`, { method: 'DELETE' }),
+    solicitar<{ mensaje: string; videojuego: Videojuego }>(`${RUTA}/${id}`, {
+      method: 'DELETE',
+    }),
 
   obtenerResumen: (id: string) => solicitar<Resumen>(`${RUTA}/${id}/resumen`),
 
@@ -64,10 +90,17 @@ export const videojuegosApi = {
     solicitar<Videojuego>(`${RUTA}/${id}/logros`, json('POST', { nombre })),
 
   eliminarLogro: (id: string, nombreLogro: string) =>
-    solicitar<Videojuego>(`${RUTA}/${id}/logros/${encodeURIComponent(nombreLogro)}`, { method: 'DELETE' }),
+    solicitar<Videojuego>(
+      `${RUTA}/${id}/logros/${encodeURIComponent(nombreLogro)}`,
+      { method: 'DELETE' }
+    ),
 
   marcarLogro: (id: string, nombre: string, obtenido: boolean) =>
-    solicitar<Videojuego>(`${RUTA}/${id}/logros`, json('PATCH', { nombre, obtenido })),
+    solicitar<Videojuego>(
+      `${RUTA}/${id}/logros`,
+      json('PATCH', { nombre, obtenido })
+    ),
 
-  listarPartidas: (id: string) => solicitar<Partida[]>(`${RUTA}/${id}/partidas`),
+  listarPartidas: (id: string) =>
+    solicitar<Partida[]>(`${RUTA}/${id}/partidas`),
 };

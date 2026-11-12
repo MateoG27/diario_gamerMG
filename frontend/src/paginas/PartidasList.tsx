@@ -2,12 +2,25 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { AlertTriangle, CalendarClock, Clock, Plus, Trash2, TrendingUp } from 'lucide-react';
+import {
+  AlertTriangle,
+  CalendarClock,
+  Clock,
+  Plus,
+  Trash2,
+  TrendingUp,
+} from 'lucide-react';
 import { partidasApi, type PartidaPopulada } from '../api/partidasApi';
 import { mensajeError } from '../api/cliente';
 import { EstadoCarga } from '../components/EstadoCarga';
 import { formatearFecha } from '../utils/formato';
-import { animacionesReducidas, botonPeligro, botonPrimario, tarjeta, titulo } from '../utils/estilos';
+import {
+  animacionesReducidas,
+  botonPeligro,
+  botonPrimario,
+  tarjeta,
+  titulo,
+} from '../utils/estilos';
 
 gsap.registerPlugin(useGSAP);
 
@@ -25,7 +38,7 @@ export default function PartidasList() {
     setError(null);
     partidasApi
       .listar()
-      .then(datos => {
+      .then((datos) => {
         if (activo) setPartidas(datos);
       })
       .catch((e: unknown) => {
@@ -51,7 +64,7 @@ export default function PartidasList() {
         clearProps: 'opacity,transform',
       });
     },
-    { scope: contenedor, dependencies: [cargando, partidas] },
+    { scope: contenedor, dependencies: [cargando, partidas] }
   );
 
   async function eliminar(p: PartidaPopulada) {
@@ -59,7 +72,7 @@ export default function PartidasList() {
     setErrorEliminar(null);
     try {
       await partidasApi.eliminar(p._id);
-      setRecarga(n => n + 1);
+      setRecarga((n) => n + 1);
     } catch (e) {
       setErrorEliminar(mensajeError(e));
     }
@@ -87,18 +100,24 @@ export default function PartidasList() {
         </p>
       )}
 
-      <EstadoCarga cargando={cargando} error={error} vacio={!cargando && !error && partidas.length === 0} />
+      <EstadoCarga
+        cargando={cargando}
+        error={error}
+        vacio={!cargando && !error && partidas.length === 0}
+      />
 
       {!cargando && !error && partidas.length > 0 && (
         <ul className="space-y-3">
-          {partidas.map(p => (
+          {partidas.map((p) => (
             <li key={p._id} className={`item-anim ${tarjeta} !p-4`}>
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                 <div className="min-w-0 flex-1 basis-48">
                   <strong className="block truncate text-lg text-white">
                     {p.videojuego?.nombre ?? '(videojuego no disponible)'}
                   </strong>
-                  {p.notas && <p className="mt-1 text-sm text-zinc-400">{p.notas}</p>}
+                  {p.notas && (
+                    <p className="mt-1 text-sm text-zinc-400">{p.notas}</p>
+                  )}
                 </div>
                 <span className="flex items-center gap-1.5 text-sm text-zinc-300">
                   <CalendarClock className="h-4 w-4 text-cyan-400" />
@@ -118,7 +137,11 @@ export default function PartidasList() {
                     />
                   </span>
                 </span>
-                <button type="button" onClick={() => void eliminar(p)} className={botonPeligro}>
+                <button
+                  type="button"
+                  onClick={() => void eliminar(p)}
+                  className={botonPeligro}
+                >
                   <Trash2 className="h-4 w-4" />
                   Eliminar
                 </button>

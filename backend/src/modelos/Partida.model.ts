@@ -14,13 +14,17 @@ export type PartidaDocumento = HydratedDocument<IPartida>;
 
 const partidaSchema = new Schema<IPartida>(
   {
-    videojuego: { type: Schema.Types.ObjectId, ref: 'Videojuego', required: true },
+    videojuego: {
+      type: Schema.Types.ObjectId,
+      ref: 'Videojuego',
+      required: true,
+    },
     fecha: { type: Date, required: true },
     duracionMinutos: { type: Number, required: true },
     porcentajeAvance: { type: Number, required: true, min: 0, max: 100 },
     notas: { type: String, required: false, trim: true },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 // Acelera la consulta de partidas de un juego ordenadas por fecha (usada en el resumen)

@@ -14,7 +14,9 @@ export interface Partida {
 }
 
 /** Partida devuelta por `GET /api/partidas` (con `populate('videojuego')`). */
-export type PartidaPopulada = Omit<Partida, 'videojuego'> & { videojuego: Videojuego };
+export type PartidaPopulada = Omit<Partida, 'videojuego'> & {
+  videojuego: Videojuego;
+};
 
 export interface PartidaDatos {
   videojuego: string;
@@ -34,5 +36,7 @@ export const partidasApi = {
     solicitar<Partida>(RUTA, { method: 'POST', body: JSON.stringify(datos) }),
 
   eliminar: (id: string) =>
-    solicitar<{ mensaje: string; partida: Partida }>(`${RUTA}/${id}`, { method: 'DELETE' }),
+    solicitar<{ mensaje: string; partida: Partida }>(`${RUTA}/${id}`, {
+      method: 'DELETE',
+    }),
 };

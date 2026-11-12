@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -21,7 +27,12 @@ import {
   AlertTriangle,
   type LucideIcon,
 } from 'lucide-react';
-import { videojuegosApi, type Plataforma, type Resumen, type Videojuego } from '../api/videojuegosApi';
+import {
+  videojuegosApi,
+  type Plataforma,
+  type Resumen,
+  type Videojuego,
+} from '../api/videojuegosApi';
 import type { Partida } from '../api/partidasApi';
 import { mensajeError } from '../api/cliente';
 import { EstadoCarga } from '../components/EstadoCarga';
@@ -59,7 +70,15 @@ function iconoPlataforma(plataforma: Plataforma): LucideIcon {
   }
 }
 
-function Estadistica({ icono: Icono, etiqueta, valor }: { icono: LucideIcon; etiqueta: string; valor: string }) {
+function Estadistica({
+  icono: Icono,
+  etiqueta,
+  valor,
+}: {
+  icono: LucideIcon;
+  etiqueta: string;
+  valor: string;
+}) {
   return (
     <div className="rounded-xl border border-white/10 bg-zinc-950/60 p-4 transition duration-300 hover:-translate-y-1 hover:border-cyan-400/50">
       <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-zinc-400">
@@ -95,7 +114,7 @@ export default function VideojuegoDetail() {
     setCargando(true);
     setError(null);
     cargar()
-      .then(d => {
+      .then((d) => {
         if (activo) setDatos(d);
       })
       .catch((e: unknown) => {
@@ -113,14 +132,16 @@ export default function VideojuegoDetail() {
   useGSAP(
     () => {
       if (cargando || !contenedor.current || animacionesReducidas()) return;
-      const tl = gsap.timeline({ defaults: { ease: 'power2.out', clearProps: 'opacity,transform' } });
+      const tl = gsap.timeline({
+        defaults: { ease: 'power2.out', clearProps: 'opacity,transform' },
+      });
       tl.from('.anim-resumen', { opacity: 0, y: 20, duration: 0.7 }).from(
         '.anim-lista',
         { opacity: 0, y: 20, duration: 0.5, stagger: 0.15 },
-        '-=0.3',
+        '-=0.3'
       );
     },
-    { scope: contenedor, dependencies: [cargando] },
+    { scope: contenedor, dependencies: [cargando] }
   );
 
   async function alternarLogro(nombre: string, obtenido: boolean) {
@@ -163,7 +184,11 @@ export default function VideojuegoDetail() {
   if (cargando || error || !datos) {
     return (
       <section>
-        <EstadoCarga cargando={cargando} error={error} vacio={!cargando && !error && !datos} />
+        <EstadoCarga
+          cargando={cargando}
+          error={error}
+          vacio={!cargando && !error && !datos}
+        />
         <p className="mt-6">
           <Link to="/" className={enlaceVolver}>
             <ArrowLeft className="h-4 w-4" />
@@ -176,7 +201,7 @@ export default function VideojuegoDetail() {
 
   const { videojuego, resumen, partidas } = datos;
   const Icono = iconoPlataforma(videojuego.plataforma);
-  const logrosObtenidos = videojuego.logros.filter(l => l.obtenido).length;
+  const logrosObtenidos = videojuego.logros.filter((l) => l.obtenido).length;
 
   return (
     <section ref={contenedor} className="space-y-8">
@@ -191,15 +216,30 @@ export default function VideojuegoDetail() {
             <Icono className="h-8 w-8" />
           </span>
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white">{videojuego.nombre}</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-white">
+              {videojuego.nombre}
+            </h1>
             <div className="mt-2 flex flex-wrap gap-2">
-              <span className={`${insignia} border-zinc-500/50 bg-zinc-500/10 text-zinc-300`}>{videojuego.plataforma}</span>
-              <span className={`${insignia} border-purple-400/50 bg-purple-400/10 text-purple-300`}>{videojuego.genero}</span>
-              <span className={`${insignia} ${claseEstado(videojuego.estado)}`}>{videojuego.estado}</span>
+              <span
+                className={`${insignia} border-zinc-500/50 bg-zinc-500/10 text-zinc-300`}
+              >
+                {videojuego.plataforma}
+              </span>
+              <span
+                className={`${insignia} border-purple-400/50 bg-purple-400/10 text-purple-300`}
+              >
+                {videojuego.genero}
+              </span>
+              <span className={`${insignia} ${claseEstado(videojuego.estado)}`}>
+                {videojuego.estado}
+              </span>
             </div>
           </div>
         </div>
-        <Link to={`/videojuegos/${videojuego._id}/editar`} className={botonSecundario}>
+        <Link
+          to={`/videojuegos/${videojuego._id}/editar`}
+          className={botonSecundario}
+        >
           <Pencil className="h-4 w-4" />
           Editar
         </Link>
@@ -213,14 +253,30 @@ export default function VideojuegoDetail() {
           Resumen Calculado
         </h2>
         <div className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Estadistica icono={ListOrdered} etiqueta="Total de partidas" valor={String(resumen.totalPartidas)} />
-          <Estadistica icono={Clock} etiqueta="Horas totales" valor={`${resumen.horasTotales} h`} />
+          <Estadistica
+            icono={ListOrdered}
+            etiqueta="Total de partidas"
+            valor={String(resumen.totalPartidas)}
+          />
+          <Estadistica
+            icono={Clock}
+            etiqueta="Horas totales"
+            valor={`${resumen.horasTotales} h`}
+          />
           <Estadistica
             icono={CalendarClock}
             etiqueta="Última partida"
-            valor={resumen.ultimaPartida ? formatearFecha(resumen.ultimaPartida) : 'Sin partidas'}
+            valor={
+              resumen.ultimaPartida
+                ? formatearFecha(resumen.ultimaPartida)
+                : 'Sin partidas'
+            }
           />
-          <Estadistica icono={TrendingUp} etiqueta="Avance actual" valor={`${resumen.porcentajeAvanceActual}%`} />
+          <Estadistica
+            icono={TrendingUp}
+            etiqueta="Avance actual"
+            valor={`${resumen.porcentajeAvanceActual}%`}
+          />
         </div>
         <div
           className="relative mt-5 h-2.5 overflow-hidden rounded-full bg-zinc-800"
@@ -247,18 +303,25 @@ export default function VideojuegoDetail() {
               </span>
             )}
           </h2>
-          <form onSubmit={e => void agregarLogro(e)} className="mb-4 flex gap-2">
+          <form
+            onSubmit={(e) => void agregarLogro(e)}
+            className="mb-4 flex gap-2"
+          >
             <input
               type="text"
               value={nuevoLogro}
-              onChange={e => setNuevoLogro(e.target.value)}
+              onChange={(e) => setNuevoLogro(e.target.value)}
               placeholder="Nombre del logro"
               aria-label="Nombre del logro"
               maxLength={120}
               required
               className={campo}
             />
-            <button type="submit" disabled={agregando || !nuevoLogro.trim()} className={`${botonPrimario} shrink-0`}>
+            <button
+              type="submit"
+              disabled={agregando || !nuevoLogro.trim()}
+              className={`${botonPrimario} shrink-0`}
+            >
               <Plus className="h-4 w-4" />
               {agregando ? 'Añadiendo...' : 'Añadir'}
             </button>
@@ -278,7 +341,7 @@ export default function VideojuegoDetail() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {videojuego.logros.map(l => (
+              {videojuego.logros.map((l) => (
                 <li
                   key={l._id}
                   className={`flex items-center justify-between gap-2 rounded-lg border pr-2 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
@@ -291,11 +354,15 @@ export default function VideojuegoDetail() {
                     <input
                       type="checkbox"
                       checked={l.obtenido}
-                      onChange={e => void alternarLogro(l.nombre, e.target.checked)}
+                      onChange={(e) =>
+                        void alternarLogro(l.nombre, e.target.checked)
+                      }
                       className="h-5 w-5 cursor-pointer accent-emerald-400"
                     />
                     <span className="flex-1">{l.nombre}</span>
-                    {l.obtenido && <CheckCircle2 className="h-5 w-5 text-emerald-400" />}
+                    {l.obtenido && (
+                      <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                    )}
                   </label>
                   <button
                     type="button"
@@ -318,7 +385,10 @@ export default function VideojuegoDetail() {
               <Clock className="h-5 w-5 text-cyan-300" />
               Partidas
             </h2>
-            <Link to={`/partidas/nueva?videojuego=${videojuego._id}`} className={botonPrimario}>
+            <Link
+              to={`/partidas/nueva?videojuego=${videojuego._id}`}
+              className={botonPrimario}
+            >
               <Plus className="h-4 w-4" />
               Registrar partida
             </Link>
@@ -329,15 +399,19 @@ export default function VideojuegoDetail() {
             </p>
           ) : (
             <ul className="space-y-3">
-              {partidas.map(p => (
+              {partidas.map((p) => (
                 <li key={p._id} className={`${tarjeta} !p-4`}>
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-medium text-white">{formatearFecha(p.fecha)}</span>
+                    <span className="font-medium text-white">
+                      {formatearFecha(p.fecha)}
+                    </span>
                     <span className="text-sm text-cyan-300">
                       {p.duracionMinutos} min · {p.porcentajeAvance}%
                     </span>
                   </div>
-                  {p.notas && <p className="mt-2 text-sm text-zinc-400">{p.notas}</p>}
+                  {p.notas && (
+                    <p className="mt-2 text-sm text-zinc-400">{p.notas}</p>
+                  )}
                 </li>
               ))}
             </ul>

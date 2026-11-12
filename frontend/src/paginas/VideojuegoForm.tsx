@@ -51,7 +51,7 @@ export default function VideojuegoForm() {
     setError(null);
     videojuegosApi
       .obtener(id)
-      .then(v => {
+      .then((v) => {
         if (!activo) return;
         setNombre(v.nombre);
         setPlataforma(v.plataforma);
@@ -71,10 +71,17 @@ export default function VideojuegoForm() {
 
   useGSAP(
     () => {
-      if (cargando || error || !contenedor.current || animacionesReducidas()) return;
-      gsap.from(contenedor.current, { opacity: 0, y: 24, duration: 0.5, ease: 'power2.out', clearProps: 'opacity,transform' });
+      if (cargando || error || !contenedor.current || animacionesReducidas())
+        return;
+      gsap.from(contenedor.current, {
+        opacity: 0,
+        y: 24,
+        duration: 0.5,
+        ease: 'power2.out',
+        clearProps: 'opacity,transform',
+      });
     },
-    { dependencies: [cargando, error] },
+    { dependencies: [cargando, error] }
   );
 
   async function enviar(e: FormEvent) {
@@ -83,7 +90,9 @@ export default function VideojuegoForm() {
     setEnviando(true);
     try {
       const datos = { nombre: nombre.trim(), plataforma, genero, estado };
-      const guardado = editando ? await videojuegosApi.actualizar(id, datos) : await videojuegosApi.crear(datos);
+      const guardado = editando
+        ? await videojuegosApi.actualizar(id, datos)
+        : await videojuegosApi.crear(datos);
       navegar(`/videojuegos/${guardado._id}`);
     } catch (err) {
       setErrorEnvio(mensajeError(err));
@@ -109,9 +118,10 @@ export default function VideojuegoForm() {
     <section>
       <div ref={contenedor} className={panelFormulario}>
         <h1 className={`${titulo} mb-6`}>
-          {editando ? 'Editar' : 'Nuevo'} <span className="text-purple-400">videojuego</span>
+          {editando ? 'Editar' : 'Nuevo'}{' '}
+          <span className="text-purple-400">videojuego</span>
         </h1>
-        <form onSubmit={e => void enviar(e)} className="space-y-5">
+        <form onSubmit={(e) => void enviar(e)} className="space-y-5">
           <div>
             <label htmlFor="nombre" className={etiqueta}>
               Nombre
@@ -119,7 +129,7 @@ export default function VideojuegoForm() {
             <input
               id="nombre"
               value={nombre}
-              onChange={e => setNombre(e.target.value)}
+              onChange={(e) => setNombre(e.target.value)}
               required
               maxLength={120}
               placeholder="Ej: The Legend of Zelda"
@@ -133,10 +143,10 @@ export default function VideojuegoForm() {
             <select
               id="plataforma"
               value={plataforma}
-              onChange={e => setPlataforma(e.target.value as Plataforma)}
+              onChange={(e) => setPlataforma(e.target.value as Plataforma)}
               className={campo}
             >
-              {PLATAFORMAS.map(p => (
+              {PLATAFORMAS.map((p) => (
                 <option key={p} value={p}>
                   {p}
                 </option>
@@ -147,8 +157,13 @@ export default function VideojuegoForm() {
             <label htmlFor="genero" className={etiqueta}>
               Género
             </label>
-            <select id="genero" value={genero} onChange={e => setGenero(e.target.value as Genero)} className={campo}>
-              {GENEROS.map(g => (
+            <select
+              id="genero"
+              value={genero}
+              onChange={(e) => setGenero(e.target.value as Genero)}
+              className={campo}
+            >
+              {GENEROS.map((g) => (
                 <option key={g} value={g}>
                   {g}
                 </option>
@@ -159,8 +174,13 @@ export default function VideojuegoForm() {
             <label htmlFor="estado" className={etiqueta}>
               Estado
             </label>
-            <select id="estado" value={estado} onChange={e => setEstado(e.target.value as Estado)} className={campo}>
-              {ESTADOS.map(s => (
+            <select
+              id="estado"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value as Estado)}
+              className={campo}
+            >
+              {ESTADOS.map((s) => (
                 <option key={s} value={s}>
                   {s}
                 </option>
@@ -181,7 +201,10 @@ export default function VideojuegoForm() {
               <Save className="h-4 w-4" />
               {enviando ? 'Guardando...' : 'Guardar'}
             </button>
-            <Link to={editando ? `/videojuegos/${id}` : '/'} className={botonSecundario}>
+            <Link
+              to={editando ? `/videojuegos/${id}` : '/'}
+              className={botonSecundario}
+            >
               Cancelar
             </Link>
           </div>
