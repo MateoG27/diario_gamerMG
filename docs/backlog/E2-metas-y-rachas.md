@@ -12,15 +12,16 @@ Decisiones tomadas para redactar este backlog:
 - **Editar una meta.** Se edita en el lugar la meta activa. Reemplazar una meta con historial (RN-12 y RN-13) es una acción aparte: se desactiva la meta y se crea una nueva. Crear una segunda meta activa sin desactivar la anterior se rechaza por conflicto.
 - **Racha.** Se calcula por videojuego, porque el progreso semanal pertenece a cada juego.
 - **Semana.** Va de lunes a domingo, en hora de Ecuador.
-- **Hitos.** Su porcentaje se mide sobre el avance del videojuego (de 0 a 100), tomado de la última partida.
+- **Hitos.** Su porcentaje se mide sobre el avance del videojuego (de 0 a 100), tomado de la última partida. Cada hito es un número entero de 1 a 100.
+- **Límites de la meta.** Las horas por semana van de más de 0 hasta **100 como máximo**. Los días por semana van de 1 a 7.
+- **Reemplazar una meta.** La meta nueva no copia los hitos de la anterior. Tiene solo los hitos que el jugador defina al crearla.
+- **Tolerancia de fecha futura.** Una partida puede tener hasta 5 minutos de adelanto respecto a la hora actual, por la diferencia de reloj entre el dispositivo y el sistema.
+- **Hora y zona.** La base de datos guarda las fechas en UTC. La zona de Ecuador se aplica únicamente al calcular el progreso y la racha.
+- **Estrategia de verificación.** Las pruebas automatizadas (Vitest) cubren estrictamente las funciones puras de `backend/src/dominio/`: el cálculo de progreso, racha y hitos (T-02 y T-03) y la validación de los datos de una partida, `validarDatosPartida` (D-1). Las rutas, los modelos y el CRUD (T-04, T-05, T-06, T-07 y D-2) se verifican a mano con curl o Thunder Client, según la tabla "Criterio -> verificación" de `docs/specs/E2-backend-meta-progreso.md`.
 
-Estas decisiones cierran los puntos abiertos 1 y 5 del PRD y parte del 4. Falta reflejarlas en el PRD.
+Estas decisiones cierran todos los puntos abiertos del PRD, que ya las incluye.
 
-Puntos que siguen abiertos. Los criterios los tratan como valores por confirmar para no inventar reglas:
-
-- Tolerancia de "fecha futura" (se propone 5 minutos).
-- Límites permitidos de horas por semana. Los días van de 1 a 7.
-- Qué pasa con los hitos al reemplazar una meta.
+Puntos que siguen abiertos: ninguno.
 
 ---
 
@@ -32,7 +33,9 @@ Cada historia incluye una nota INVEST (Independiente, Negociable, Valiosa, Estim
 
 **Como** jugador, **quiero** definir una meta semanal de horas y de días por semana para un videojuego, **para** tener un objetivo concreto que me ayude a jugar con constancia.
 
-*INVEST:* es independiente y se puede entregar sola. Los valores concretos de la meta son negociables. Se verifica creando una meta y comprobando que queda activa. Es pequeña.
+**Regla de la historia.** La meta admite como máximo **100 horas por semana**, y de 1 a 7 días por semana.
+
+*INVEST:* es independiente y se puede entregar sola. Los valores concretos de la meta son negociables dentro de esos límites. Se verifica creando una meta y comprobando que queda activa. Es pequeña.
 
 ### HU-02. Ver mis horas y días jugados de la semana frente a la meta
 
@@ -79,8 +82,8 @@ Formato DADO / CUANDO / ENTONCES. La numeración es global. Todos los días y se
 
 **CA-02. Valores de meta no válidos**
 - **DADO** un videojuego en curso sin meta activa
-- **CUANDO** el jugador intenta definir una meta con 0 horas, con horas negativas, con 0 días o con más de 7 días por semana
-- **ENTONCES** la meta no se crea y se muestra un mensaje en español que indica qué valor corregir. El máximo de horas permitido está por confirmar.
+- **CUANDO** el jugador intenta definir una meta con 0 horas, con horas negativas, con más de 100 horas por semana, con 0 días o con más de 7 días por semana
+- **ENTONCES** la meta no se crea y se muestra un mensaje en español que indica qué valor corregir. El límite de horas por semana es 100: una meta de exactamente 100 horas se acepta y una de 101 se rechaza.
 
 **CA-03. Una sola meta activa por videojuego (RN-14)**
 - **DADO** un videojuego que ya tiene una meta activa
@@ -228,7 +231,7 @@ Estos criterios se entregan en las deudas D-1 y D-2 (fase 8). Mientras no estén
 
 **CA-29. Sin fecha futura (RN-09)**
 - **DADO** un jugador que registra o edita una partida
-- **CUANDO** indica una fecha posterior al momento actual, más allá de la tolerancia por confirmar
+- **CUANDO** indica una fecha posterior al momento actual, más allá de 5 minutos de tolerancia
 - **ENTONCES** la partida no se guarda y se muestra un mensaje en español.
 
 **CA-30. Editar una partida recalcula todo (RN-04 y RN-06)**
@@ -264,11 +267,24 @@ Estos criterios se entregan en las deudas D-1 y D-2 (fase 8). Mientras no estén
 Un ticket se considera terminado cuando cumple todo lo siguiente:
 
 - Los criterios de aceptación que cubre están cumplidos.
-- El test se escribió antes del código y está en verde, con commits separados: primero `test (E2): T-xx` y luego `feat (E2): T-xx`.
-- `npm run check` pasa sin errores.
+- **Lógica pura (T-02, T-03 y D-1):** el test se escribió antes del código y está en verde, con commits separados. En T-02 y T-03 se usa `test (E2): T-02` y luego `feat (E2): T-03`. En D-1 se usa un commit de test y luego `fix (deuda): D-1`. Esta regla aplica estrictamente a las funciones puras probadas con Vitest: el cálculo de progreso y rachas (T-02) y la función `validarDatosPartida` (D-1).
+- **Rutas, CRUD y modelos (T-04, T-05, T-06, T-07 y D-2):** la verificación es puramente manual, con curl o Thunder Client, y sigue la tabla "Criterio -> verificación" de `docs/specs/E2-backend-meta-progreso.md`. Estos tickets no llevan tests automatizados y se entregan en un solo commit `feat (E2): T-xx` o `fix (deuda): D-2`.
+- **Resto de tickets (T-01, T-08 a T-13):** se terminan con los puntos de su propia Definition of Done.
+- `npm test` está en verde y `npm run check` pasa sin errores en el backend (en el frontend, `npm run check` y `npm run build`).
 - El commit lleva el id del ticket y la caja del ticket está marcada en este backlog.
 
 Cada ticket añade su propia Definition of Done específica.
+
+### Cómo se verifica cada ticket
+
+| Ticket | Tipo de verificación |
+|---|---|
+| T-01 | Se comprueba a mano que `npm test` corre sin error y que la sincronización de índices crea los índices |
+| T-02, T-03 | Vitest, pruebas unitarias del cálculo de progreso, rachas e hitos |
+| T-04, T-05, T-06, T-07 | Manual (curl o Thunder Client), sin tests automatizados |
+| D-1 | Vitest para `validarDatosPartida`, más una comprobación manual de que las rutas de partidas responden 400 |
+| D-2 | Manual (curl o Thunder Client), sin tests automatizados |
+| T-08 a T-13 | Según su propia Definition of Done |
 
 ### Dependencias
 
@@ -298,57 +314,65 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
 ### Tickets
 
 - [ ] **T-01 | chore | Vitest, script npm test y sincronización de índices**
-  - **Resumen:** agregar la herramienta de pruebas al backend, el script `npm test` y una forma explícita de crear los índices en la base de datos, manteniendo la creación automática desactivada. Cubre H01 y H03 del diagnóstico.
-  - **Cubre:** ninguno directamente. Habilita la verificación de todos los criterios.
+  - **Resumen:** agregar Vitest al backend, el script `npm test` y una forma explícita de crear los índices en la base de datos, manteniendo la creación automática desactivada. Cubre H01 y H03 del diagnóstico.
+  - **Cubre:** ninguno directamente. Habilita las pruebas unitarias de la lógica pura.
   - **Definition of Done:**
-    - `npm test` corre y pasa con al menos una prueba de ejemplo.
+    - `npm test` corre y termina sin error aunque todavía no existan pruebas. No se agrega una prueba de ejemplo, porque Vitest se usa solo para las funciones puras de `backend/src/dominio/`.
     - Hay una forma documentada de sincronizar los índices.
     - La creación automática de índices sigue desactivada.
+    - La única dependencia nueva es `vitest`, como dependencia de desarrollo.
   - **Depende de:** -
-  - **Nota:** requiere permiso para agregar la dependencia de pruebas, según las reglas del proyecto.
+  - **Nota:** el permiso para agregar `vitest` ya está concedido. No se agregan otras dependencias de pruebas.
 
 - [ ] **T-02 | test | Tests de las funciones de dominio (semana, días, racha, hitos)**
-  - **Resumen:** escribir primero las pruebas del cálculo puro: semana de lunes a domingo en hora de Ecuador, días jugados únicos, racha actual y mejor racha, y estado de los hitos. También cubre la zona horaria `America/Guayaquil` y las fechas ISO con zona (H10).
-  - **Cubre:** CA-04 a CA-11 y CA-14.
+  - **Resumen:** escribir primero las pruebas unitarias (Vitest) del cálculo puro: semana de lunes a domingo en hora de Ecuador, días jugados únicos, racha actual y mejor racha, y estado de los hitos. También cubre la zona horaria `America/Guayaquil` (H10), que se resuelve solo en el dominio. La base de datos sigue guardando UTC. Son las únicas pruebas automatizadas del cálculo de progreso.
+  - **Cubre:** CA-04 a CA-11, CA-14, CA-15, CA-18 y CA-20 (la parte de cálculo).
   - **Definition of Done:**
     - Hay pruebas para cada criterio que cubre, incluidos los casos de CA-07, CA-08 y CA-09.
-    - Hay casos de partida que cruza la medianoche y de cambio de semana.
+    - Las funciones de dominio reciben la fecha actual como parámetro. Las pruebas no dependen del reloj del sistema.
+    - Hay casos de partida que cruza la medianoche, de cambio de semana y de un día distinto entre UTC y Ecuador.
     - Las pruebas fallan por la razón correcta, porque el código aún no existe, y se confirman con un commit propio.
   - **Depende de:** T-01
 
 - [ ] **T-03 | feat | src/dominio/progreso.ts hasta que T-02 pase**
   - **Resumen:** implementar el cálculo puro de progreso, racha y hitos, sin acceso a la base de datos, hasta que todas las pruebas de T-02 pasen.
-  - **Cubre:** CA-04 a CA-11 y CA-14.
+  - **Cubre:** CA-04 a CA-11, CA-14, CA-15, CA-18 y CA-20 (la parte de cálculo).
   - **Definition of Done:**
     - Todas las pruebas de T-02 pasan sin modificarlas.
-    - El módulo no importa nada de la capa de datos.
+    - La zona horaria se resuelve con `Intl.DateTimeFormat` y `America/Guayaquil`, solo dentro de este módulo.
+    - El módulo no lee la fecha actual por su cuenta ni importa nada de la capa de datos.
     - `npm run check` sin errores.
   - **Depende de:** T-02
 
 - [ ] **T-04 | feat | Modelo Meta con validaciones e índice único parcial**
-  - **Resumen:** crear el modelo de meta con horas, días, estado activo o inactivo y hitos. Incluye las validaciones de rango y un índice único parcial que impide dos metas activas para el mismo videojuego.
+  - **Resumen:** crear el modelo de meta con horas, días, estado activo o inactivo y hitos. Incluye las validaciones de rango (horas por semana de más de 0 hasta 100, días de 1 a 7, hitos de 1 a 100) y un índice único parcial que impide dos metas activas para el mismo videojuego.
   - **Cubre:** CA-02, CA-16, CA-17 y CA-18.
+  - **Verificación:** manual, sin tests automatizados. Las validaciones se comprueban con curl o Thunder Client a través de las rutas de T-05, siguiendo la tabla "Criterio -> verificación" de la spec.
   - **Definition of Done:**
-    - Pruebas del modelo: valores inválidos, más de 5 hitos, porcentajes repetidos y hitos guardados de menor a mayor.
-    - El índice único parcial se crea con la sincronización de T-01.
+    - El modelo compila y `npm run check` pasa sin errores.
+    - El índice único parcial existe en la base de desarrollo después de ejecutar la sincronización de índices de T-01.
+    - Verificación manual documentada: horas 0, negativas y mayores que 100 (100 se acepta), días 0 y mayores que 7, más de 5 hitos, porcentajes repetidos y hitos guardados de menor a mayor.
     - Los mensajes de validación están en español.
   - **Depende de:** T-01
 
 - [ ] **T-05 | feat | CRUD de Meta, 409 por meta duplicada y errorHandler con 11000 -> 409**
   - **Resumen:** crear, consultar, editar y desactivar metas. Una segunda meta activa responde conflicto. El manejador de errores traduce el código 11000 a 409 sin exponer datos internos (H04).
   - **Cubre:** CA-01, CA-03, CA-15, CA-19, CA-21, CA-22, CA-23 y CA-24.
+  - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec. Las rutas son crear, listar, consultar por id, actualizar y desactivar. No hay ruta para reemplazar: reemplazar es desactivar la meta actual y luego crear una nueva.
   - **Definition of Done:**
-    - Pruebas de creación, edición, desactivación y consulta del historial.
+    - Verificación manual documentada de creación, listado del historial, consulta por id, edición y desactivación.
     - Una segunda meta activa devuelve 409 con un mensaje en español.
-    - No existe operación para reactivar una meta desactivada.
-    - Crear una meta en un juego completado o abandonado se rechaza.
+    - Reemplazar con dos llamadas (desactivar y crear) deja la anterior inactiva y la nueva activa.
+    - No existe operación para reactivar ni para borrar una meta.
+    - Crear una meta en un juego completado o abandonado devuelve 409.
   - **Depende de:** T-04
 
 - [ ] **T-06 | feat | GET /api/videojuegos/:id/progreso-semanal**
   - **Resumen:** devolver el progreso de la semana actual, la racha actual, la mejor racha y el estado de los hitos de un videojuego, usando el cálculo puro de T-03 y la meta activa.
   - **Cubre:** CA-04 a CA-14, CA-20 y CA-30 (la parte de lectura).
+  - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec. El cálculo ya está probado con Vitest en T-02 y T-03.
   - **Definition of Done:**
-    - Pruebas con partidas y meta reales de ejemplo.
+    - Verificación manual documentada con partidas y una meta de ejemplo.
     - La respuesta incluye horas reales sin tope y el cumplimiento limitado a 100%.
     - Identificador inválido responde 400 y videojuego inexistente responde 404.
     - Un juego sin meta responde sin error y sin progreso de meta, y la racha se calcula igual.
@@ -357,8 +381,9 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
 - [ ] **T-07 | feat | Cascada al eliminar videojuego y desactivación por estado**
   - **Resumen:** al eliminar un videojuego sin partidas, eliminar todas sus metas. Si el videojuego tiene partidas, mantener el bloqueo. Al pasar un videojuego a completado o abandonado, desactivar su meta activa.
   - **Cubre:** CA-25, CA-26 y CA-27.
+  - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec.
   - **Definition of Done:**
-    - Pruebas: eliminación con partidas bloqueada, eliminación sin partidas con metas activas e inactivas, y cambio de estado con meta activa.
+    - Verificación manual documentada: eliminación con partidas bloqueada, eliminación sin partidas con metas activas e inactivas, y cambio de estado con meta activa.
     - Tras la eliminación no quedan metas huérfanas.
     - La política actual de eliminación de partidas no cambia.
   - **Depende de:** T-05
@@ -383,7 +408,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
   - **Depende de:** T-08
 
 - [ ] **T-10 | feat | Formulario de meta con hitos y desactivar con confirmación**
-  - **Resumen:** formulario para crear y editar la meta con sus hitos, acción de reemplazar y desactivar con confirmación previa.
+  - **Resumen:** formulario para crear y editar la meta con sus hitos, acción de reemplazar y desactivar con confirmación previa. Reemplazar se resuelve en pantalla como desactivar la meta actual y luego crear una nueva, porque no hay una ruta de reemplazo. El formulario valida horas de más de 0 hasta 100.
   - **Cubre:** CA-01, CA-02, CA-15 a CA-19 y CA-21 a CA-23 en pantalla.
   - **Definition of Done:**
     - El formulario muestra los errores del servidor en español.
@@ -421,19 +446,21 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
   - **Depende de:** todos (T-01 a T-12)
 
 - [ ] **D-1 | fix | Validar duración > 0 y fecha no futura en partidas (fase 8)**
-  - **Resumen:** rechazar partidas con duración 0 o negativa y con fecha futura, con mensajes en español, en el servicio y en el modelo para que D-2 las reutilice. Cubre H06 y la parte de fecha futura de H07.
+  - **Resumen:** rechazar partidas con duración 0 o negativa y con fecha futura, con mensajes en español. La validación vive en una función pura, `validarDatosPartida`, que el servicio usa al crear y que D-2 reutiliza al editar. Cubre H06 y la parte de fecha futura de H07.
   - **Cubre:** CA-28 y CA-29.
   - **Definition of Done:**
-    - Pruebas primero: duración 0, negativa y válida; fecha pasada, presente, futura y dentro de la tolerancia.
-    - Las respuestas son 400 con mensaje en español.
+    - Pruebas primero con Vitest sobre `validarDatosPartida`, en un commit separado y antes del código: duración 0, negativa y válida; fecha pasada, presente, futura y dentro de la tolerancia de 5 minutos.
+    - `validarDatosPartida` recibe la hora actual como parámetro y no lee el reloj por su cuenta.
+    - Verificación manual con curl o Thunder Client de que la creación de partidas responde 400 con mensaje en español.
     - Queda fuera del alcance: máximo de duración y entero obligatorio.
   - **Depende de:** -
 
 - [ ] **D-2 | fix | Editar partida PATCH /api/partidas/:id y formulario (fase 8)**
   - **Resumen:** editar fecha, duración, avance y notas de una partida, reutilizando las validaciones de D-1. Incluye la ruta de edición en el frontend y el botón Editar en el listado. La partida no cambia de videojuego.
   - **Cubre:** CA-30 y CA-14 desde la edición.
+  - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec. Las validaciones de datos ya están probadas con Vitest en D-1.
   - **Definition of Done:**
-    - Pruebas primero: edición válida, campo no permitido, identificador inválido, identificador inexistente y validaciones de D-1.
+    - Verificación manual documentada: edición válida, campo no permitido, identificador inválido, identificador inexistente y validaciones de D-1.
     - Tras editar, el resumen, la racha y los hitos se recalculan.
     - El formulario reutiliza el de crear partida en modo edición.
   - **Depende de:** D-1

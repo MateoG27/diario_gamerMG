@@ -24,10 +24,10 @@ E2 convierte el diario en una herramienta de constancia. El jugador fija cuánto
 
 E2 incluye:
 
-1. **Meta semanal por videojuego.** El jugador define cuántas horas quiere jugar por semana y en cuántos días distintos de la semana. Cada videojuego puede tener como máximo una meta activa.
+1. **Meta semanal por videojuego.** El jugador define cuántas horas quiere jugar por semana y en cuántos días distintos de la semana. Cada videojuego puede tener como máximo una meta activa. La meta admite hasta 100 horas por semana y de 1 a 7 días por semana.
 2. **Progreso semanal.** El jugador ve cuánto lleva en la semana actual frente a su meta, tanto en horas como en días jugados. La semana va de lunes a domingo, en hora de Ecuador.
 3. **Racha de días jugados.** El jugador ve su racha actual y su mejor racha histórica.
-4. **Hitos de avance.** El jugador puede definir hasta 5 hitos por meta, como porcentajes del avance del videojuego, entre 0 y 100. Cada hito se muestra como alcanzado o pendiente según el avance actual del juego.
+4. **Hitos de avance.** El jugador puede definir hasta 5 hitos por meta, como porcentajes enteros del avance del videojuego, entre 1 y 100. Cada hito se muestra como alcanzado o pendiente según el avance actual del juego.
 5. **Reemplazo de metas.** El jugador puede cambiar su meta. La meta anterior pasa a inactiva y se conserva en su historial.
 6. **Calidad de las partidas.** Para que el progreso y las rachas sean confiables, las partidas deben tener una duración mayor que cero y no pueden tener fecha futura.
 
@@ -117,15 +117,17 @@ Cada videojuego tiene como máximo una meta activa a la vez. Puede tener varias 
 
 - El día y la semana se miden en hora de Ecuador, que no cambia durante el año.
 - La semana empieza el lunes y termina el domingo.
-- El porcentaje de un hito se mide sobre el avance del videojuego, entre 0 y 100, según la última partida registrada. No se mide sobre el cumplimiento de la meta semanal.
+- El porcentaje de un hito se mide sobre el avance del videojuego, que va de 0 a 100, según la última partida registrada. Los hitos son porcentajes enteros de 1 a 100. No se mide sobre el cumplimiento de la meta semanal.
 - Cuando el jugador edita una partida, no puede cambiarla a otro videojuego.
 - La aplicación es de un solo jugador, por lo que no hay que separar datos entre personas.
 
 ## 8. Puntos abiertos
 
-1. **Meta cumplida en la semana.** Falta decidir si la meta semanal se considera cumplida cuando se alcanzan las horas y los días, o si basta con una de las dos.
-2. **Tolerancia de "fecha futura".** Se propone aceptar hasta 5 minutos de diferencia entre el reloj del jugador y el del sistema. Por confirmar.
-3. **Límites de la meta.** Falta fijar los valores permitidos de horas por semana y de días por semana. Los días deben estar entre 1 y 7.
-4. **Hitos al reemplazar una meta.** Falta decidir si los hitos de la meta anterior pasan a la nueva o si la nueva empieza sin hitos.
-5. **Alcance de la racha.** Falta decidir si la racha es de cada videojuego o del jugador en general. Este documento la trata por videojuego.
-6. **Corrección de partidas.** Varias reglas, como RN-04 y RN-06, suponen que el jugador puede corregir sus partidas. Hoy el producto no permite editarlas. Hay que confirmar que esa mejora se entrega antes o junto con E2.
+No hay puntos abiertos. Los que quedaban se resolvieron así:
+
+1. **Meta cumplida en la semana.** La semana está cumplida solo si se alcanzan las horas Y los días de la meta.
+2. **Tolerancia de "fecha futura".** Se acepta hasta 5 minutos de diferencia entre el reloj del jugador y el del sistema.
+3. **Límites de la meta.** Las horas por semana van de más de 0 hasta 100 como máximo. Los días por semana van de 1 a 7.
+4. **Hitos al reemplazar una meta.** La meta nueva no copia los hitos de la anterior. Empieza con los hitos que el jugador defina.
+5. **Alcance de la racha.** La racha es de cada videojuego.
+6. **Corrección de partidas.** Varias reglas, como RN-04 y RN-06, suponen que el jugador puede corregir sus partidas. La edición de partidas se entrega como mejora de la fase final de E2, junto con la validación de partidas. Hasta entonces, las reglas se cumplen con las partidas que el jugador crea o borra.

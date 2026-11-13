@@ -65,8 +65,8 @@ Estas limitaciones afectan a E2, porque el progreso y las rachas se derivan de l
 
 **Prerrequisitos de producto:**
 
-- Partidas válidas, con duración mayor que cero y sin fecha futura.
-- Partidas que el jugador pueda corregir, porque varias reglas dependen de que el avance cambie al editar.
-- Día y semana definidos en hora de Ecuador de forma consistente en toda la aplicación.
+- Partidas válidas, con duración mayor que cero y sin fecha futura (tolerancia de 5 minutos). Se entregan en la deuda D-1, en la fase final de E2.
+- Partidas que el jugador pueda corregir, porque varias reglas dependen de que el avance cambie al editar. Se entregan en la deuda D-2, en la fase final de E2.
+- Día y semana definidos en hora de Ecuador de forma consistente en el cálculo de progreso y racha.
 
-**Puntos abiertos.** Están detallados en el documento de producto: condición de meta cumplida, tolerancia de fecha futura, límites de la meta, hitos al reemplazar una meta y alcance de la racha.
+**Decisiones de la épica.** La meta se cumple solo con horas Y días. La meta admite hasta 100 horas por semana y de 1 a 7 días por semana. La semana empieza el lunes. La racha es por videojuego. Los hitos son porcentajes enteros de 1 a 100 y no se copian al reemplazar una meta. No quedan puntos abiertos.
