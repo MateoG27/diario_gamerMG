@@ -283,7 +283,7 @@ Cada ticket añade su propia Definition of Done específica.
 | T-02, T-03 | Vitest, pruebas unitarias del cálculo de progreso, rachas e hitos |
 | T-04, T-05, T-06, T-07 | Manual (curl o Thunder Client), sin tests automatizados |
 | D-1 | Vitest para `validarDatosPartida`, más una comprobación manual de que las rutas de partidas responden 400 |
-| D-2 | Manual (curl o Thunder Client), sin tests automatizados |
+| D-2 | Manual, sin tests automatizados: curl o Thunder Client en el backend y navegador en el frontend |
 | T-08 a T-13 | Según su propia Definition of Done |
 
 ### Dependencias
@@ -300,7 +300,7 @@ flowchart LR
   T06 --> T08["T-08 metasApi y tipos"]
   T08 --> T09["T-09 Seccion de progreso"]
   T08 --> T10["T-10 Formulario de meta"]
-  T09 --> T11["T-11 Recarga y estados"]
+  T09 --> T11["T-11 Progreso al abrir y estados"]
   T06 --> T12["T-12 Seed, env y README"]
   T07 --> T13["T-13 Despliegue"]
   T10 --> T13
@@ -408,7 +408,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
   - **Depende de:** T-08
 
 - [ ] **T-10 | feat | Formulario de meta con hitos y desactivar con confirmación**
-  - **Resumen:** formulario para crear y editar la meta con sus hitos, acción de reemplazar y desactivar con confirmación previa. Reemplazar se resuelve en pantalla como desactivar la meta actual y luego crear una nueva, porque no hay una ruta de reemplazo. El formulario valida horas de más de 0 hasta 100.
+  - **Resumen:** formulario para crear y editar la meta con sus hitos, acción de reemplazar y desactivar con confirmación previa. La confirmación de desactivar usa `window.confirm`, como el resto de la aplicación (el Proyecto 3). Reemplazar se resuelve en pantalla como desactivar la meta actual y luego crear una nueva, porque no hay una ruta de reemplazo, y no pide un segundo diálogo: basta con un texto de advertencia visible en el formulario. El formulario valida horas de más de 0 hasta 100.
   - **Cubre:** CA-01, CA-02, CA-15 a CA-19 y CA-21 a CA-23 en pantalla.
   - **Definition of Done:**
     - El formulario muestra los errores del servidor en español.
@@ -417,13 +417,13 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Los hitos se muestran ordenados de menor a mayor.
   - **Depende de:** T-08
 
-- [ ] **T-11 | feat | Recarga del progreso al cambiar partidas y estados de carga, error y vacío**
-  - **Resumen:** recargar el progreso cuando el jugador crea, borra o edita partidas o cambia el estado del juego. Incluye estados de carga, error y vacío (sin meta o sin partidas).
+- [ ] **T-11 | feat | Progreso al día al abrir el detalle y estados de carga, error y vacío**
+  - **Resumen:** las partidas se crean, borran y editan en otras páginas, y el estado del juego y la meta también se cambian en otras rutas. Por eso el progreso se pide al servidor cada vez que se monta el detalle del videojuego, es decir, cada vez que el jugador vuelve a él. Dentro del detalle, el progreso y el historial se vuelven a pedir solo después de desactivar una meta o al reintentar tras un error. Incluye estados de carga, error y vacío (sin meta o sin partidas).
   - **Cubre:** CA-14, CA-20 y CA-30 en pantalla.
   - **Definition of Done:**
-    - Tras cambiar una partida, el progreso, la racha y los hitos se actualizan sin recargar la página.
+    - Tras cambiar una partida, el estado del juego o la meta en otra página, al volver al detalle el progreso, la racha y los hitos están actualizados, sin recargar el navegador y sin datos viejos.
     - Hay estado de carga, de error con opción de reintentar y de vacío.
-    - Al editar la meta, el progreso se actualiza de inmediato.
+    - Al editar la meta, el progreso del detalle muestra de inmediato los valores nuevos.
   - **Depende de:** T-09
 
 - [ ] **T-12 | chore | Seed de demo, .env.example y README**
@@ -458,11 +458,11 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
 - [ ] **D-2 | fix | Editar partida PATCH /api/partidas/:id y formulario (fase 8)**
   - **Resumen:** editar fecha, duración, avance y notas de una partida, reutilizando las validaciones de D-1. Incluye la ruta de edición en el frontend y el botón Editar en el listado. La partida no cambia de videojuego.
   - **Cubre:** CA-30 y CA-14 desde la edición.
-  - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec. Las validaciones de datos ya están probadas con Vitest en D-1.
+  - **Verificación:** manual, sin tests automatizados. La parte del backend, con curl o Thunder Client según la tabla "Criterio -> verificación" de `docs/specs/E2-backend-meta-progreso.md`. La parte del frontend, con el navegador según `docs/specs/E2-frontend-progreso-meta.md` (archivos de D-2 en su tabla "Ticket -> archivos"). Las validaciones de datos ya están probadas con Vitest en D-1.
   - **Definition of Done:**
     - Verificación manual documentada: edición válida, campo no permitido, identificador inválido, identificador inexistente y validaciones de D-1.
     - Tras editar, el resumen, la racha y los hitos se recalculan.
-    - El formulario reutiliza el de crear partida en modo edición.
+    - El formulario reutiliza `PartidaForm.tsx` en modo edición.
   - **Depende de:** D-1
 
 ---
