@@ -1,7 +1,7 @@
 import { conectarDB, cerrarDB } from './conexionDB';
 import { Partida } from './modelos/Partida.model';
 import { Videojuego } from './modelos/Videojuego.model';
-// T-04 agregará aquí la importación del modelo Meta.
+import { Meta } from './modelos/Meta.model';
 
 /**
  * Sincroniza los índices de cada modelo con la base de datos.
@@ -9,7 +9,7 @@ import { Videojuego } from './modelos/Videojuego.model';
  * Requiere una conexión ya abierta.
  */
 export async function sincronizarIndices() {
-  const modelos = [Partida, Videojuego];
+  const modelos = [Partida, Videojuego, Meta];
   const resultado: Record<string, string[]> = {};
   for (const modelo of modelos) {
     resultado[modelo.modelName] = await modelo.syncIndexes();

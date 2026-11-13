@@ -6,6 +6,7 @@ import { errorHandler } from './middlewares/errorHandler';
 import { ApiError } from './apiError';
 import videojuegosRouter from './routes/videojuegos.routes';
 import partidasRouter from './routes/partidas.routes';
+import metasRouter from './routes/metas.routes';
 export function crearApp() {
   const app = express();
   app.disable('x-powered-by');
@@ -21,6 +22,7 @@ export function crearApp() {
   );
   app.use('/api/videojuegos', videojuegosRouter);
   app.use('/api/partidas', partidasRouter);
+  app.use('/api', metasRouter);
   app.use((req, _res, next) =>
     next(new ApiError(404, `Ruta no encontrada: ${req.method} ${req.path}`))
   );

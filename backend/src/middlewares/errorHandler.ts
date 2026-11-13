@@ -25,6 +25,15 @@ export const errorHandler: ErrorRequestHandler = (
     status = 400;
     error = err.message;
   } else if (
+    typeof err === 'object' &&
+    err !== null &&
+    'code' in err &&
+    (err as { code: unknown }).code === 11000
+  ) {
+    // Clave duplicada (p. ej. segunda meta activa): mensaje fijo, sin exponer keyValue.
+    status = 409;
+    error = 'Registro duplicado';
+  } else if (
     err instanceof SyntaxError &&
     'status' in err &&
     (err as { status: unknown }).status === 400

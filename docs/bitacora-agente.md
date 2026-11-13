@@ -7,3 +7,6 @@ Le pedí crear el plan para redactar el PRD y las epicas de la expansión. Me pi
 
 ***Fase 4
 Creamos el PRD y redactó backlog/E2-metas-y-rachas.md con 6 historias INVEST, los criterios de aceptación DADO/CUANDO/ENTONCES numerados globalmente  (CA-01 a CA-30) que cubren RN-01 a RN-14, los 15 tickets exactamente como en tu tabla con su Definition of Done, y la sección de deuda técnica tomada del diagnóstico.
+
+***Fase 5
+Creamos las specs del Frontend y del Backend. Cursor detectó varias inconsistencias entre el backlog/E2-metas-y-rachas.md y specs/E2-backend-meta-progreso.md. Se ajustasron ambos archivos para evitar inchoerencias. Tambien se ajustó la spec para incluir D-2 en el formulario y definir la recarga de T-11,
