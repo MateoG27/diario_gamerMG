@@ -1,15 +1,23 @@
-import { CheckCircle2, Flame } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CheckCircle2, Flame, Plus } from 'lucide-react';
 import type { ProgresoSemanal as Progreso } from '../api/metasApi';
+import type { Estado } from '../api/videojuegosApi';
 import {
   formatearFechaCalendario,
   formatearHoras,
 } from '../utils/formato';
-import { etiquetaDatoE2, textoAuxiliarE2 } from '../utils/estilosE2';
+import {
+  botonPrimarioE2,
+  etiquetaDatoE2,
+  textoAuxiliarE2,
+} from '../utils/estilosE2';
 import { BarraProgreso } from './BarraProgreso';
+import { EstadoSeccion } from './EstadoSeccion';
 import { ListaHitos } from './ListaHitos';
 
 interface Props {
   progreso: Progreso;
+  estado: Estado;
 }
 
 function textoDias(n: number): string {
@@ -23,8 +31,27 @@ function textoRacha(actual: number): string {
     : `Llevas ${actual} días seguidos, ¡buen ritmo!`;
 }
 
-export function ProgresoSemanal({ progreso }: Props) {
+export function ProgresoSemanal({ progreso, estado }: Props) {
   const { meta, racha } = progreso;
+  const enCurso = estado !== 'completado' && estado !== 'abandonado';
+  // El servidor devuelve mejor racha 0 solo cuando el videojuego no tiene partidas.
+  const sinPartidas = racha.mejor === 0;
+
+  const avisoSinPartidas = sinPartidas && (
+    <EstadoSeccion
+      tipo="vacio"
+      titulo="Aún no tienes partidas: registra la primera"
+      acciones={
+        <Link
+          to={`/partidas/nueva?videojuego=${progreso.videojuego}`}
+          className={botonPrimarioE2}
+        >
+          <Plus className="h-4 w-4" aria-hidden="true" />
+          Registrar partida
+        </Link>
+      }
+    />
+  );
 
   const bloqueRacha = (
     <div className="rounded-lg border border-borde p-4">
@@ -40,7 +67,24 @@ export function ProgresoSemanal({ progreso }: Props) {
   );
 
   if (!meta) {
-    return <div className="space-y-5">{bloqueRacha}</div>;
+    return (
+      <div className="space-y-5">
+        {enCurso ? (
+          <EstadoSeccion
+            tipo="vacio"
+            titulo="Aún no tienes una meta semanal para este videojuego"
+            texto="Define una para ver tus horas y días de cada semana."
+          />
+        ) : (
+          <EstadoSeccion
+            tipo="vacio"
+            titulo="Este videojuego ya no está en curso, así que no puede tener una meta semanal."
+          />
+        )}
+        {avisoSinPartidas}
+        {bloqueRacha}
+      </div>
+    );
   }
 
   // RN-05: el texto muestra el valor real; solo el relleno de la barra se limita a 100 %.
@@ -102,6 +146,8 @@ export function ProgresoSemanal({ progreso }: Props) {
           </p>
         )}
       </div>
+
+      {avisoSinPartidas}
 
       {bloqueRacha}
 

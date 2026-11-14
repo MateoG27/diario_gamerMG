@@ -293,7 +293,10 @@ export default function VideojuegoDetail() {
         </div>
       </div>
 
-      <SeccionProgreso videojuegoId={videojuego._id} />
+      <SeccionProgreso
+        videojuegoId={videojuego._id}
+        estado={videojuego.estado}
+      />
 
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="anim-lista">

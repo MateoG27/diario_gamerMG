@@ -12,6 +12,7 @@ import VideojuegoDetail from './paginas/VideojuegoDetail';
 import VideojuegoForm from './paginas/VideojuegoForm';
 import PartidasList from './paginas/PartidasList';
 import PartidaForm from './paginas/PartidaForm';
+import MetaForm from './paginas/MetaForm';
 import { botonSecundario } from './utils/estilos';
 
 const enlaceBase =
@@ -71,6 +72,12 @@ export default function App() {
             <Route
               path="/videojuegos/:id/editar"
               element={<VideojuegoForm />}
+            />
+            <Route path="/videojuegos/:id/meta/nueva" element={<MetaForm />} />
+            <Route path="/videojuegos/:id/meta/editar" element={<MetaForm />} />
+            <Route
+              path="/videojuegos/:id/meta/reemplazar"
+              element={<MetaForm />}
             />
             <Route path="/partidas" element={<PartidasList />} />
             <Route path="/partidas/nueva" element={<PartidaForm />} />
