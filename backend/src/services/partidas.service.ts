@@ -1,5 +1,6 @@
 import { ApiError } from '../apiError';
 import { idValido, cuerpo } from '../validacion';
+import { validarDatosPartida } from '../dominio/partida';
 import { Partida, type PartidaDocumento } from '../modelos/Partida.model';
 import { Videojuego } from '../modelos/Videojuego.model';
 
@@ -44,11 +45,15 @@ export async function crear(body: unknown): Promise<PartidaDocumento> {
 
   const duracion = numero(duracionMinutos, 'duracionMinutos');
   const avance = numero(porcentajeAvance, 'porcentajeAvance');
-  if (duracion < 0)
-    throw new ApiError(400, 'duracionMinutos no puede ser negativo');
 
   const fecha = new Date(datos.fecha);
   if (Number.isNaN(fecha.getTime())) throw new ApiError(400, 'fecha inválida');
+
+  const errores = validarDatosPartida(
+    { fecha, duracionMinutos: duracion },
+    new Date()
+  );
+  if (errores.length) throw new ApiError(400, errores[0]);
 
   // Las referencias no se validan en MongoDB: se comprueba manualmente que el juego exista.
   idValido(datos.videojuego);
