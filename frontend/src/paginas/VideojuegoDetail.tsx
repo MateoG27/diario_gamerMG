@@ -36,6 +36,7 @@ import {
 import type { Partida } from '../api/partidasApi';
 import { mensajeError } from '../api/cliente';
 import { EstadoCarga } from '../components/EstadoCarga';
+import { SeccionProgreso } from '../components/SeccionProgreso';
 import { formatearFecha } from '../utils/formato';
 import {
   animacionesReducidas,
@@ -291,6 +292,8 @@ export default function VideojuegoDetail() {
           />
         </div>
       </div>
+
+      <SeccionProgreso videojuegoId={videojuego._id} />
 
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="anim-lista">
