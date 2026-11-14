@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import { requestId } from './middlewares/requestId';
 import { logger } from './middlewares/logger';
 import { errorHandler } from './middlewares/errorHandler';
@@ -7,9 +8,11 @@ import { ApiError } from './apiError';
 import videojuegosRouter from './routes/videojuegos.routes';
 import partidasRouter from './routes/partidas.routes';
 import metasRouter from './routes/metas.routes';
+
 export function crearApp() {
   const app = express();
   app.disable('x-powered-by');
+  app.use(cors());
   app.use(requestId);
   app.use(logger);
   app.use(express.json({ limit: '32kb' }));
