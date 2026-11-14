@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as videojuegos from '../services/videojuegos.service';
 import * as partidas from '../services/partidas.service';
+import * as progreso from '../services/progreso.service';
 import { queryTexto } from '../validacion';
 import { ApiError } from '../apiError';
 
@@ -72,6 +73,18 @@ export async function obtenerResumen(
 ): Promise<void> {
   try {
     res.json(await videojuegos.obtenerResumen(req.params.id));
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function obtenerProgresoSemanal(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    res.json(await progreso.obtenerProgresoSemanal(req.params.id));
   } catch (e) {
     next(e);
   }

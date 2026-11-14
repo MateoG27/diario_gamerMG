@@ -6,6 +6,7 @@ const router = Router();
 router.get('/', controller.listar);
 router.post('/', controller.crear);
 router.get('/:id/resumen', controller.obtenerResumen);
+router.get('/:id/progreso-semanal', controller.obtenerProgresoSemanal);
 router.get('/:id', controller.obtener);
 router.put('/:id', controller.actualizar);
 router.patch('/:id', controller.actualizar);

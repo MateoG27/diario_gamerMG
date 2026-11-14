@@ -14,6 +14,7 @@ import {
   type VideojuegoDocumento,
 } from '../modelos/Videojuego.model';
 import { Partida } from '../modelos/Partida.model';
+import { Meta } from '../modelos/Meta.model';
 
 const CAMPOS = ['nombre', 'plataforma', 'genero', 'estado'] as const;
 const OBLIGATORIOS = CAMPOS;
@@ -90,6 +91,13 @@ export async function actualizar(
     runValidators: true,
   });
   if (!videojuego) throw new ApiError(404, 'Videojuego no encontrado');
+  // Un juego completado o abandonado no puede conservar una meta activa.
+  if (videojuego.estado === 'completado' || videojuego.estado === 'abandonado') {
+    await Meta.updateMany(
+      { videojuego: videojuego._id, activa: true },
+      { $set: { activa: false, desactivadaEn: new Date() } }
+    );
+  }
   return videojuego;
 }
 
@@ -104,6 +112,8 @@ export async function eliminar(id: string): Promise<VideojuegoDocumento> {
     );
   }
   await videojuego.deleteOne();
+  // Cascada: las metas (activas e inactivas) solo se eliminan junto con su videojuego.
+  await Meta.deleteMany({ videojuego: videojuego._id });
   return videojuego;
 }
 
