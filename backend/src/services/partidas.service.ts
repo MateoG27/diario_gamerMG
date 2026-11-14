@@ -69,6 +69,57 @@ export async function crear(body: unknown): Promise<PartidaDocumento> {
   });
 }
 
+/** Edición parcial (D-2): solo se validan los campos que llegan. La partida no cambia de videojuego. */
+export async function actualizar(
+  id: string,
+  body: unknown
+): Promise<PartidaDocumento> {
+  idValido(id);
+  const datos = cuerpo(body, [
+    'fecha',
+    'duracionMinutos',
+    'porcentajeAvance',
+    'notas',
+  ]) as {
+    fecha?: string | null;
+    duracionMinutos?: number;
+    porcentajeAvance?: number;
+    notas?: string | null;
+  };
+
+  const cambios: {
+    fecha?: Date;
+    duracionMinutos?: number;
+    porcentajeAvance?: number;
+    notas?: string | null;
+  } = {};
+
+  if ('fecha' in datos) {
+    const fecha = datos.fecha ? new Date(datos.fecha) : null;
+    if (!fecha || Number.isNaN(fecha.getTime()))
+      throw new ApiError(400, 'fecha inválida');
+    cambios.fecha = fecha;
+  }
+  if (datos.duracionMinutos !== undefined)
+    cambios.duracionMinutos = datos.duracionMinutos;
+  if (datos.porcentajeAvance !== undefined)
+    cambios.porcentajeAvance = datos.porcentajeAvance;
+  if (datos.notas !== undefined) cambios.notas = datos.notas;
+
+  const errores = validarDatosPartida(
+    { fecha: cambios.fecha, duracionMinutos: cambios.duracionMinutos },
+    new Date()
+  );
+  if (errores.length) throw new ApiError(400, errores[0]);
+
+  const partida = await Partida.findByIdAndUpdate(id, cambios, {
+    new: true,
+    runValidators: true,
+  });
+  if (!partida) throw new ApiError(404, 'Partida no encontrada');
+  return partida;
+}
+
 export async function eliminar(id: string): Promise<PartidaDocumento> {
   const partida = await Partida.findByIdAndDelete(idValido(id));
   if (!partida) throw new ApiError(404, 'Partida no encontrada');

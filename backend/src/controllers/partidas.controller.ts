@@ -25,6 +25,18 @@ export async function crear(
   }
 }
 
+export async function actualizar(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    res.json(await partidas.actualizar(req.params.id, req.body));
+  } catch (e) {
+    next(e);
+  }
+}
+
 export async function eliminar(
   req: Request,
   res: Response,
