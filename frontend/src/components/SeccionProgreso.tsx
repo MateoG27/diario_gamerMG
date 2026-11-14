@@ -1,8 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Pencil, Plus, PowerOff, Repeat } from 'lucide-react';
+import {
+  AlertTriangle,
+  Pencil,
+  Plus,
+  PowerOff,
+  RefreshCw,
+  Repeat,
+} from 'lucide-react';
 import { mensajeError } from '../api/cliente';
-import { metasApi, type ProgresoSemanal as Progreso } from '../api/metasApi';
+import {
+  metasApi,
+  type Meta,
+  type ProgresoSemanal as Progreso,
+} from '../api/metasApi';
 import type { Estado } from '../api/videojuegosApi';
 import {
   botonPeligroE2,
@@ -12,6 +23,7 @@ import {
   tituloSeccionE2,
 } from '../utils/estilosE2';
 import { EstadoSeccion } from './EstadoSeccion';
+import { HistorialMetas } from './HistorialMetas';
 import { ProgresoSemanal } from './ProgresoSemanal';
 
 interface Props {
@@ -33,6 +45,8 @@ export function SeccionProgreso({ videojuegoId, estado }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [desactivando, setDesactivando] = useState(false);
   const [errorAccion, setErrorAccion] = useState<string | null>(null);
+  const [metas, setMetas] = useState<Meta[]>([]);
+  const [errorHistorial, setErrorHistorial] = useState<string | null>(null);
   // Identifica la última petición vigente; las anteriores se descartan.
   const peticion = useRef(0);
 
@@ -41,19 +55,26 @@ export function SeccionProgreso({ videojuegoId, estado }: Props) {
       const actual = ++peticion.current;
       if (!conservarDatos) {
         setProgreso(null);
+        setMetas([]);
         setCargando(true);
       }
       setError(null);
-      try {
-        const p = await metasApi.obtenerProgreso(videojuegoId);
-        if (actual !== peticion.current) return;
-        setProgreso(p);
-      } catch (e) {
-        if (actual !== peticion.current) return;
-        setError(mensajeError(e));
-      } finally {
-        if (actual === peticion.current) setCargando(false);
-      }
+      setErrorHistorial(null);
+      // Progreso e historial se piden en paralelo y fallan por separado.
+      const [resProgreso, resMetas] = await Promise.allSettled([
+        metasApi.obtenerProgreso(videojuegoId),
+        metasApi.listarPorVideojuego(videojuegoId),
+      ]);
+      if (actual !== peticion.current) return;
+
+      if (resProgreso.status === 'fulfilled') setProgreso(resProgreso.value);
+      else setError(mensajeError(resProgreso.reason));
+
+      // Si el historial falla se conserva la lista anterior.
+      if (resMetas.status === 'fulfilled') setMetas(resMetas.value);
+      else setErrorHistorial(mensajeError(resMetas.reason));
+
+      setCargando(false);
     },
     [videojuegoId]
   );
@@ -83,6 +104,8 @@ export function SeccionProgreso({ videojuegoId, estado }: Props) {
 
   const enCurso = estado !== 'completado' && estado !== 'abandonado';
   const meta = progreso?.meta ?? null;
+  // La meta activa se toma de `progreso.meta` (servidor); del listado solo salen las inactivas.
+  const inactivas = useMemo(() => metas.filter((m) => !m.activa), [metas]);
 
   return (
     <section aria-labelledby="titulo-progreso-semanal" className={tarjetaE2}>
@@ -165,6 +188,32 @@ export function SeccionProgreso({ videojuegoId, estado }: Props) {
               )}
             </div>
           )}
+
+          {errorHistorial && (
+            <div
+              role="alert"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-peligro/50 bg-peligro/10 px-4 py-3 text-sm text-texto"
+            >
+              <p className="flex items-start gap-2">
+                <AlertTriangle
+                  className="mt-0.5 h-5 w-5 shrink-0 text-peligro"
+                  aria-hidden="true"
+                />
+                No pudimos cargar tu historial de metas: {errorHistorial}.
+                Inténtalo de nuevo.
+              </p>
+              <button
+                type="button"
+                onClick={() => void cargar(true)}
+                className={botonSecundarioE2}
+              >
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                Reintentar
+              </button>
+            </div>
+          )}
+
+          <HistorialMetas metas={inactivas} />
         </div>
       )}
     </section>
