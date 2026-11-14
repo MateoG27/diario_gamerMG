@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   CalendarClock,
   Clock,
+  Pencil,
   Plus,
   Trash2,
   TrendingUp,
@@ -21,6 +22,7 @@ import {
   tarjeta,
   titulo,
 } from '../utils/estilos';
+import { botonSecundarioE2 } from '../utils/estilosE2';
 
 gsap.registerPlugin(useGSAP);
 
@@ -137,6 +139,13 @@ export default function PartidasList() {
                     />
                   </span>
                 </span>
+                <Link
+                  to={`/partidas/${p._id}/editar`}
+                  className={botonSecundarioE2}
+                >
+                  <Pencil className="h-4 w-4" aria-hidden="true" />
+                  Editar
+                </Link>
                 <button
                   type="button"
                   onClick={() => void eliminar(p)}

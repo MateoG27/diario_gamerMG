@@ -81,6 +81,7 @@ export default function App() {
             />
             <Route path="/partidas" element={<PartidasList />} />
             <Route path="/partidas/nueva" element={<PartidaForm />} />
+            <Route path="/partidas/:id/editar" element={<PartidaForm />} />
             <Route
               path="*"
               element={

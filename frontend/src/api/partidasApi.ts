@@ -27,6 +27,16 @@ export interface PartidaDatos {
   notas?: string;
 }
 
+/** Lo único que el frontend envía al editar una partida. Nunca incluye `videojuego`. */
+export interface PartidaEdicion {
+  /** Cadena de fecha (ISO con zona). */
+  fecha?: string;
+  duracionMinutos?: number;
+  porcentajeAvance?: number;
+  /** Cadena vacía borra las notas. */
+  notas?: string;
+}
+
 const RUTA = '/api/partidas';
 
 export const partidasApi = {
@@ -34,6 +44,12 @@ export const partidasApi = {
 
   crear: (datos: PartidaDatos) =>
     solicitar<Partida>(RUTA, { method: 'POST', body: JSON.stringify(datos) }),
+
+  actualizar: (id: string, datos: PartidaEdicion) =>
+    solicitar<Partida>(`${RUTA}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(datos),
+    }),
 
   eliminar: (id: string) =>
     solicitar<{ mensaje: string; partida: Partida }>(`${RUTA}/${id}`, {
