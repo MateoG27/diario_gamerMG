@@ -1,0 +1,26 @@
+{
+  "name": "diario-gamer",
+  "version": "1.0.0",
+  "description": "Diario de Progreso Gamer es una aplicación web para llevar el registro de los videojuegos que se juegan y de cada sesión de juego (partida). Para cada videojuego se guarda su plataforma, género, estado (jugando, pausado, completado o abandonado) y una lista de logros. Para cada partida se registra la fecha, cuántos minutos se jugó, el porcentaje de avance alcanzado y notas opcionales. Con esta información la aplicación calcula un resumen del progreso de cada juego.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MateoG27/diario_gamerMG.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MateoG27/diario_gamerMG/issues"
+  },
+  "homepage": "https://github.com/MateoG27/diario_gamerMG#readme",
+  "devDependencies": {
+    "prettier": "^3.10.0"
+  }
+}

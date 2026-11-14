@@ -1,4 +1,17 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+  --color-fondo: #09090b;
+  --color-superficie: #18181b;
+  --color-borde: #3f3f46;
+  --color-texto: #f4f4f5;
+  --color-texto-suave: #a1a1aa;
+  --color-primario: #9333ea;
+  --color-acento: #22d3ee;
+  --color-exito: #34d399;
+  --color-aviso: #fbbf24;
+  --color-peligro: #ef4444;
+}
 
 @layer base {
   html {
@@ -7,8 +20,16 @@
   body {
     @apply min-h-screen bg-zinc-950 text-zinc-100 antialiased;
     background-image:
-      radial-gradient(ellipse at top left, rgb(168 85 247 / 0.15), transparent 50%),
-      radial-gradient(ellipse at bottom right, rgb(6 182 212 / 0.12), transparent 50%);
+      radial-gradient(
+        ellipse at top left,
+        rgb(168 85 247 / 0.15),
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at bottom right,
+        rgb(6 182 212 / 0.12),
+        transparent 50%
+      );
     background-attachment: fixed;
   }
   select option {

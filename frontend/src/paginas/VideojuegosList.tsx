@@ -2,8 +2,24 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Monitor, Gamepad2, ToggleLeft, Smartphone, Plus, Pencil, Trash2, Filter, AlertTriangle, type LucideIcon } from 'lucide-react';
-import { ESTADOS, videojuegosApi, type Plataforma, type Videojuego } from '../api/videojuegosApi';
+import {
+  Monitor,
+  Gamepad2,
+  ToggleLeft,
+  Smartphone,
+  Plus,
+  Pencil,
+  Trash2,
+  Filter,
+  AlertTriangle,
+  type LucideIcon,
+} from 'lucide-react';
+import {
+  ESTADOS,
+  videojuegosApi,
+  type Plataforma,
+  type Videojuego,
+} from '../api/videojuegosApi';
 import { mensajeError } from '../api/cliente';
 import { EstadoCarga } from '../components/EstadoCarga';
 import {
@@ -49,7 +65,7 @@ export default function VideojuegosList() {
     setError(null);
     videojuegosApi
       .listar(estado || undefined)
-      .then(datos => {
+      .then((datos) => {
         if (activo) setVideojuegos(datos);
       })
       .catch((e: unknown) => {
@@ -76,7 +92,7 @@ export default function VideojuegosList() {
         clearProps: 'opacity,transform',
       });
     },
-    { scope: contenedor, dependencies: [cargando, videojuegos] },
+    { scope: contenedor, dependencies: [cargando, videojuegos] }
   );
 
   async function eliminar(v: Videojuego) {
@@ -84,7 +100,7 @@ export default function VideojuegosList() {
     setErrorEliminar(null);
     try {
       await videojuegosApi.eliminar(v._id);
-      setRecarga(n => n + 1);
+      setRecarga((n) => n + 1);
     } catch (e) {
       setErrorEliminar(mensajeError(e));
     }
@@ -100,9 +116,13 @@ export default function VideojuegosList() {
           <label className="flex items-center gap-2 text-sm text-zinc-300">
             <Filter className="h-4 w-4 text-cyan-400" />
             Filtrar por estado:
-            <select value={estado} onChange={e => setEstado(e.target.value)} className={`${campo} w-auto`}>
+            <select
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+              className={`${campo} w-auto`}
+            >
               <option value="">Todos</option>
-              {ESTADOS.map(e => (
+              {ESTADOS.map((e) => (
                 <option key={e} value={e}>
                   {e}
                 </option>
@@ -126,15 +146,25 @@ export default function VideojuegosList() {
         </p>
       )}
 
-      <EstadoCarga cargando={cargando} error={error} vacio={!cargando && !error && videojuegos.length === 0} />
+      <EstadoCarga
+        cargando={cargando}
+        error={error}
+        vacio={!cargando && !error && videojuegos.length === 0}
+      />
 
       {!cargando && !error && videojuegos.length > 0 && (
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {videojuegos.map(v => {
+          {videojuegos.map((v) => {
             const Icono = iconoPlataforma(v.plataforma);
             return (
-              <li key={v._id} className={`item-anim flex flex-col gap-4 ${tarjeta}`}>
-                <Link to={`/videojuegos/${v._id}`} className="group flex items-start gap-3">
+              <li
+                key={v._id}
+                className={`item-anim flex flex-col gap-4 ${tarjeta}`}
+              >
+                <Link
+                  to={`/videojuegos/${v._id}`}
+                  className="group flex items-start gap-3"
+                >
                   <span className="rounded-lg border border-purple-500/40 bg-purple-500/10 p-2.5 text-purple-300 transition group-hover:shadow-[0_0_18px_rgb(168_85_247/0.6)]">
                     <Icono className="h-6 w-6" />
                   </span>
@@ -142,19 +172,34 @@ export default function VideojuegosList() {
                     <strong className="block truncate text-lg text-white transition group-hover:text-purple-300">
                       {v.nombre}
                     </strong>
-                    <span className="text-sm text-zinc-400">{v.plataforma}</span>
+                    <span className="text-sm text-zinc-400">
+                      {v.plataforma}
+                    </span>
                   </span>
                 </Link>
                 <div className="flex flex-wrap gap-2">
-                  <span className={`${insignia} border-purple-400/50 bg-purple-400/10 text-purple-300`}>{v.genero}</span>
-                  <span className={`${insignia} ${claseEstado(v.estado)}`}>{v.estado}</span>
+                  <span
+                    className={`${insignia} border-purple-400/50 bg-purple-400/10 text-purple-300`}
+                  >
+                    {v.genero}
+                  </span>
+                  <span className={`${insignia} ${claseEstado(v.estado)}`}>
+                    {v.estado}
+                  </span>
                 </div>
                 <div className="mt-auto flex gap-2 pt-1">
-                  <Link to={`/videojuegos/${v._id}/editar`} className={botonSecundario}>
+                  <Link
+                    to={`/videojuegos/${v._id}/editar`}
+                    className={botonSecundario}
+                  >
                     <Pencil className="h-4 w-4" />
                     Editar
                   </Link>
-                  <button type="button" onClick={() => void eliminar(v)} className={botonPeligro}>
+                  <button
+                    type="button"
+                    onClick={() => void eliminar(v)}
+                    className={botonPeligro}
+                  >
                     <Trash2 className="h-4 w-4" />
                     Eliminar
                   </button>
