@@ -9,4 +9,13 @@ Le pedí crear el plan para redactar el PRD y las epicas de la expansión. Me pi
 Creamos el PRD y redactó backlog/E2-metas-y-rachas.md con 6 historias INVEST, los criterios de aceptación DADO/CUANDO/ENTONCES numerados globalmente  (CA-01 a CA-30) que cubren RN-01 a RN-14, los 15 tickets exactamente como en tu tabla con su Definition of Done, y la sección de deuda técnica tomada del diagnóstico.
 
 ***Fase 5
-Creamos las specs del Frontend y del Backend. Cursor detectó varias inconsistencias entre el backlog/E2-metas-y-rachas.md y specs/E2-backend-meta-progreso.md. Se ajustasron ambos archivos para evitar inchoerencias. Tambien se ajustó la spec para incluir D-2 en el formulario y definir la recarga de T-11,
+Creamos las specs del Frontend y del Backend. Cursor detectó varias inconsistencias entre el backlog/E2-metas-y-rachas.md y specs/E2-backend-meta-progreso.md. Se ajustasron ambos archivos para evitar inchoerencias. Tambien se ajustó la spec para incluir D-2 en el formulario y definir la recarga de T-11.
+
+***Fase 6
+El TDD funcionó a la perfección con el dominio y la integración de endpoints. Cursor leyó los archivos e identificó una pequeña discrepancia entre lo que le pedia el prompt y lo que habiamos definido en la Fase 2. Me preguntó sobre eso antes de buildear el plan.
+
+***Fase 7
+Implementación del Frontend con T-10 que consiste en la implementación del formulario para crear y ediar una meta. Y T-11 que muestra los estados de carga, error y vacio además de los componentes progreso y formualrio dentro de la vista prinicpal. Cursor tuvo un pequeño bug, y es que el nuevo chat para T-11 no identificó los cambios implementados de T-10 y me preguntó si debia crearlos primero.
+
+***Fase 8
+Se pagó las deudas tecnicas D-1 y D-2. Ticket D-1: Validación de Partidas pura en el Backend. Ticket D-2: Edición de Partidas en el Frontend. 

@@ -313,7 +313,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
 
 ### Tickets
 
-- [ ] **T-01 | chore | Vitest, script npm test y sincronización de índices**
+- [x] **T-01 | chore | Vitest, script npm test y sincronización de índices**
   - **Resumen:** agregar Vitest al backend, el script `npm test` y una forma explícita de crear los índices en la base de datos, manteniendo la creación automática desactivada. Cubre H01 y H03 del diagnóstico.
   - **Cubre:** ninguno directamente. Habilita las pruebas unitarias de la lógica pura.
   - **Definition of Done:**
@@ -324,7 +324,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
   - **Depende de:** -
   - **Nota:** el permiso para agregar `vitest` ya está concedido. No se agregan otras dependencias de pruebas.
 
-- [ ] **T-02 | test | Tests de las funciones de dominio (semana, días, racha, hitos)**
+- [x] **T-02 | test | Tests de las funciones de dominio (semana, días, racha, hitos)**
   - **Resumen:** escribir primero las pruebas unitarias (Vitest) del cálculo puro: semana de lunes a domingo en hora de Ecuador, días jugados únicos, racha actual y mejor racha, y estado de los hitos. También cubre la zona horaria `America/Guayaquil` (H10), que se resuelve solo en el dominio. La base de datos sigue guardando UTC. Son las únicas pruebas automatizadas del cálculo de progreso.
   - **Cubre:** CA-04 a CA-11, CA-14, CA-15, CA-18 y CA-20 (la parte de cálculo).
   - **Definition of Done:**
@@ -334,7 +334,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Las pruebas fallan por la razón correcta, porque el código aún no existe, y se confirman con un commit propio.
   - **Depende de:** T-01
 
-- [ ] **T-03 | feat | src/dominio/progreso.ts hasta que T-02 pase**
+- [x] **T-03 | feat | src/dominio/progreso.ts hasta que T-02 pase**
   - **Resumen:** implementar el cálculo puro de progreso, racha y hitos, sin acceso a la base de datos, hasta que todas las pruebas de T-02 pasen.
   - **Cubre:** CA-04 a CA-11, CA-14, CA-15, CA-18 y CA-20 (la parte de cálculo).
   - **Definition of Done:**
@@ -344,7 +344,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - `npm run check` sin errores.
   - **Depende de:** T-02
 
-- [ ] **T-04 | feat | Modelo Meta con validaciones e índice único parcial**
+- [x] **T-04 | feat | Modelo Meta con validaciones e índice único parcial**
   - **Resumen:** crear el modelo de meta con horas, días, estado activo o inactivo y hitos. Incluye las validaciones de rango (horas por semana de más de 0 hasta 100, días de 1 a 7, hitos de 1 a 100) y un índice único parcial que impide dos metas activas para el mismo videojuego.
   - **Cubre:** CA-02, CA-16, CA-17 y CA-18.
   - **Verificación:** manual, sin tests automatizados. Las validaciones se comprueban con curl o Thunder Client a través de las rutas de T-05, siguiendo la tabla "Criterio -> verificación" de la spec.
@@ -355,7 +355,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Los mensajes de validación están en español.
   - **Depende de:** T-01
 
-- [ ] **T-05 | feat | CRUD de Meta, 409 por meta duplicada y errorHandler con 11000 -> 409**
+- [x] **T-05 | feat | CRUD de Meta, 409 por meta duplicada y errorHandler con 11000 -> 409**
   - **Resumen:** crear, consultar, editar y desactivar metas. Una segunda meta activa responde conflicto. El manejador de errores traduce el código 11000 a 409 sin exponer datos internos (H04).
   - **Cubre:** CA-01, CA-03, CA-15, CA-19, CA-21, CA-22, CA-23 y CA-24.
   - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec. Las rutas son crear, listar, consultar por id, actualizar y desactivar. No hay ruta para reemplazar: reemplazar es desactivar la meta actual y luego crear una nueva.
@@ -367,7 +367,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Crear una meta en un juego completado o abandonado devuelve 409.
   - **Depende de:** T-04
 
-- [ ] **T-06 | feat | GET /api/videojuegos/:id/progreso-semanal**
+- [x] **T-06 | feat | GET /api/videojuegos/:id/progreso-semanal**
   - **Resumen:** devolver el progreso de la semana actual, la racha actual, la mejor racha y el estado de los hitos de un videojuego, usando el cálculo puro de T-03 y la meta activa.
   - **Cubre:** CA-04 a CA-14, CA-20 y CA-30 (la parte de lectura).
   - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec. El cálculo ya está probado con Vitest en T-02 y T-03.
@@ -378,7 +378,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Un juego sin meta responde sin error y sin progreso de meta, y la racha se calcula igual.
   - **Depende de:** T-03, T-05
 
-- [ ] **T-07 | feat | Cascada al eliminar videojuego y desactivación por estado**
+- [x] **T-07 | feat | Cascada al eliminar videojuego y desactivación por estado**
   - **Resumen:** al eliminar un videojuego sin partidas, eliminar todas sus metas. Si el videojuego tiene partidas, mantener el bloqueo. Al pasar un videojuego a completado o abandonado, desactivar su meta activa.
   - **Cubre:** CA-25, CA-26 y CA-27.
   - **Verificación:** manual, sin tests automatizados, con curl o Thunder Client según la tabla "Criterio -> verificación" de la spec.
@@ -388,7 +388,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - La política actual de eliminación de partidas no cambia.
   - **Depende de:** T-05
 
-- [ ] **T-08 | feat | metasApi.ts y tipos del frontend**
+- [x] **T-08 | feat | metasApi.ts y tipos del frontend**
   - **Resumen:** capa del frontend para consumir metas y el progreso semanal, con sus tipos. Usa el cliente de la aplicación como único punto de peticiones.
   - **Cubre:** ninguno directamente. Habilita HU-02, HU-03, HU-04 y HU-05 en pantalla.
   - **Definition of Done:**
@@ -397,7 +397,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - `npm run check` y `npm run build` del frontend sin errores.
   - **Depende de:** T-06
 
-- [ ] **T-09 | feat | Sección de progreso semanal**
+- [x] **T-09 | feat | Sección de progreso semanal**
   - **Resumen:** sección en el detalle del videojuego con horas y días de la semana frente a la meta, cumplimiento limitado a 100%, racha actual, mejor racha e hitos alcanzados y pendientes. Usa la identidad visual de `DESIGN.md`.
   - **Cubre:** CA-04 a CA-14 en pantalla.
   - **Definition of Done:**
@@ -407,7 +407,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Respeta `prefers-reduced-motion`.
   - **Depende de:** T-08
 
-- [ ] **T-10 | feat | Formulario de meta con hitos y desactivar con confirmación**
+- [x] **T-10 | feat | Formulario de meta con hitos y desactivar con confirmación**
   - **Resumen:** formulario para crear y editar la meta con sus hitos, acción de reemplazar y desactivar con confirmación previa. La confirmación de desactivar usa `window.confirm`, como el resto de la aplicación (el Proyecto 3). Reemplazar se resuelve en pantalla como desactivar la meta actual y luego crear una nueva, porque no hay una ruta de reemplazo, y no pide un segundo diálogo: basta con un texto de advertencia visible en el formulario. El formulario valida horas de más de 0 hasta 100.
   - **Cubre:** CA-01, CA-02, CA-15 a CA-19 y CA-21 a CA-23 en pantalla.
   - **Definition of Done:**
@@ -417,7 +417,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Los hitos se muestran ordenados de menor a mayor.
   - **Depende de:** T-08
 
-- [ ] **T-11 | feat | Progreso al día al abrir el detalle y estados de carga, error y vacío**
+- [x] **T-11 | feat | Progreso al día al abrir el detalle y estados de carga, error y vacío**
   - **Resumen:** las partidas se crean, borran y editan en otras páginas, y el estado del juego y la meta también se cambian en otras rutas. Por eso el progreso se pide al servidor cada vez que se monta el detalle del videojuego, es decir, cada vez que el jugador vuelve a él. Dentro del detalle, el progreso y el historial se vuelven a pedir solo después de desactivar una meta o al reintentar tras un error. Incluye estados de carga, error y vacío (sin meta o sin partidas).
   - **Cubre:** CA-14, CA-20 y CA-30 en pantalla.
   - **Definition of Done:**
@@ -426,7 +426,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Al editar la meta, el progreso del detalle muestra de inmediato los valores nuevos.
   - **Depende de:** T-09
 
-- [ ] **T-12 | chore | Seed de demo, .env.example y README**
+- [x] **T-12 | chore | Seed de demo, .env.example y README**
   - **Resumen:** datos de demostración con metas, partidas, rachas e hitos; `.env.example` con solo nombres de variables, incluida la lista blanca de CORS; y sección "Cómo ejecutar" en el README. Cubre H13 y H15 del diagnóstico.
   - **Cubre:** ninguno directamente.
   - **Definition of Done:**
@@ -445,7 +445,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Ninguna variable secreta queda en el repositorio.
   - **Depende de:** todos (T-01 a T-12)
 
-- [ ] **D-1 | fix | Validar duración > 0 y fecha no futura en partidas (fase 8)**
+- [x] **D-1 | fix | Validar duración > 0 y fecha no futura en partidas (fase 8)**
   - **Resumen:** rechazar partidas con duración 0 o negativa y con fecha futura, con mensajes en español. La validación vive en una función pura, `validarDatosPartida`, que el servicio usa al crear y que D-2 reutiliza al editar. Cubre H06 y la parte de fecha futura de H07.
   - **Cubre:** CA-28 y CA-29.
   - **Definition of Done:**
@@ -455,7 +455,7 @@ T-13 depende de todos los tickets T-01 a T-12. En el diagrama solo se dibujan la
     - Queda fuera del alcance: máximo de duración y entero obligatorio.
   - **Depende de:** -
 
-- [ ] **D-2 | fix | Editar partida PATCH /api/partidas/:id y formulario (fase 8)**
+- [x] **D-2 | fix | Editar partida PATCH /api/partidas/:id y formulario (fase 8)**
   - **Resumen:** editar fecha, duración, avance y notas de una partida, reutilizando las validaciones de D-1. Incluye la ruta de edición en el frontend y el botón Editar en el listado. La partida no cambia de videojuego.
   - **Cubre:** CA-30 y CA-14 desde la edición.
   - **Verificación:** manual, sin tests automatizados. La parte del backend, con curl o Thunder Client según la tabla "Criterio -> verificación" de `docs/specs/E2-backend-meta-progreso.md`. La parte del frontend, con el navegador según `docs/specs/E2-frontend-progreso-meta.md` (archivos de D-2 en su tabla "Ticket -> archivos"). Las validaciones de datos ya están probadas con Vitest en D-1.
